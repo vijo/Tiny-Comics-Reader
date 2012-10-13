@@ -1,5 +1,7 @@
 package org.fox.ttcomics;
 
+import java.io.File;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -40,20 +42,7 @@ public class CommonActivity extends FragmentActivity {
 
 	
 	public void onComicArchiveSelected(String fileName) {
-		
-		Intent intent = new Intent(CommonActivity.this,
-		ViewComicActivity.class);
-
-		intent.putExtra("fileName", fileName);
-
-		startActivityForResult(intent, 0); 
-		
-		/* FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		
-		ft.replace(R.id.comics_list, new ComicPager(fileName), FRAG_COMICS_LIST);
-		ft.addToBackStack(null);
-		
-		ft.commit(); */    
+		//
 	}
 
 	public void setSize(String fileName, int size) {

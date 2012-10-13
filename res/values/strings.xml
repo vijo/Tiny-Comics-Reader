@@ -13,7 +13,7 @@
     <string name="menu_rescan">Reload</string>
     <string name="tab_all_comics">All comics</string>
     <string name="tab_unread">Unread</string>
-    <string name="tab_finished">Finished</string>
+    <string name="tab_read">Read</string>
     <string name="dialog_need_prefs_message">Please configure base directory for comics archives.</string>
     <string name="dialog_need_prefs_preferences">Preferences</string>
     <string name="cancel">Cancel</string>
@@ -23,6 +23,7 @@
     <string name="dialog_open_location">Open location</string>
     <string name="dialog_location_beginning">Beginning</string>
     <string name="dialog_location_furthest">Furthest read location</string>
-    <string name="dialog_location_location">Location...</string>
+    <string name="dialog_location_location">Location…</string>
     <string name="dialog_location_end">End</string>
+    <string name="tab_unfinished">Unfinished</string>
 </resources>

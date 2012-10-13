@@ -11,17 +11,19 @@ import java.util.zip.ZipFile;
 
 import android.util.Log;
 
-public class CbzComicArchive {
+public class CbzComicArchive extends ComicArchive {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private ZipFile m_zipFile;
 	private int m_count;
 	private ArrayList<ZipEntry> m_entries = new ArrayList<ZipEntry>();
 	
+	@Override
 	public int getCount() {
 		return m_count;
 	}
 	
+	@Override
 	public InputStream getItem(int index) throws IOException {		
 		return m_zipFile.getInputStream(m_entries.get(index));
 	}

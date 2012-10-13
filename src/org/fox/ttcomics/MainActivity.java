@@ -1,5 +1,7 @@
 package org.fox.ttcomics;
 
+import java.io.File;
+
 import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
@@ -20,6 +22,7 @@ public class MainActivity extends CommonActivity {
 	
 	private TabListener m_tabListener = new TabListener();
 	private int m_selectedTab;
+	private String m_baseDirectory = "";
 	
 	private class TabListener implements ActionBar.TabListener {
 
@@ -31,17 +34,12 @@ public class MainActivity extends CommonActivity {
 			FragmentTransaction sft = getSupportFragmentManager().beginTransaction();
 			
 			if (m_selectedTab != tab.getPosition() && m_selectedTab != -1) {
-				switch (tab.getPosition()) {
-				case 0:
-					sft.replace(R.id.comics_list, new ComicListFragment(), FRAG_COMICS_LIST);				
-					break;
-				case 1:
-					sft.replace(R.id.comics_list, new ComicListFragment(1), FRAG_COMICS_LIST);
-					break;
-				case 2:
-					sft.replace(R.id.comics_list, new ComicListFragment(2), FRAG_COMICS_LIST);
-					break;			
-				}
+				
+				ComicListFragment frag = new ComicListFragment(tab.getPosition()); 
+				
+				frag.setBaseDirectory(m_baseDirectory);
+				
+				sft.replace(R.id.comics_list, frag, FRAG_COMICS_LIST);
 			}
 			
 			m_selectedTab = tab.getPosition();
@@ -69,13 +67,27 @@ public class MainActivity extends CommonActivity {
         setSmallScreen(findViewById(R.id.tablet_layout_hack) == null);
         
     	if (savedInstanceState == null) {
+           	m_selectedTab = getIntent().getIntExtra("selectedTab", 0);
+    		
+           	Log.d(TAG, "selTab=" + m_selectedTab);
+
+           	ComicListFragment frag = new ComicListFragment(m_selectedTab);
+
+            if (getIntent().getStringExtra("baseDir") != null) {
+            	m_baseDirectory = getIntent().getStringExtra("baseDir");
+            	frag.setBaseDirectory(m_baseDirectory);
+            }
+
     		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-    		ft.replace(R.id.comics_list, new ComicListFragment(), FRAG_COMICS_LIST);
-    		ft.commit();    		
+    		ft.replace(R.id.comics_list, frag, FRAG_COMICS_LIST);
+    		ft.commit();
+    		
+    		m_selectedTab = -1;
     	} else {
         	m_selectedTab = -1;
+        	m_baseDirectory = savedInstanceState.getString("baseDir");
     	}
-
+    	
     	ActionBar actionBar = getActionBar();
     	
     	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -87,13 +99,19 @@ public class MainActivity extends CommonActivity {
     	actionBar.addTab(getActionBar().newTab()
     			.setText(R.string.tab_unread)
     			.setTabListener(m_tabListener));
-    	
+
     	actionBar.addTab(getActionBar().newTab()
-    			.setText(R.string.tab_finished)
+    			.setText(R.string.tab_unfinished)
+    			.setTabListener(m_tabListener));
+
+    	actionBar.addTab(getActionBar().newTab()
+    			.setText(R.string.tab_read)
     			.setTabListener(m_tabListener));
 
     	if (savedInstanceState != null) {
     		m_selectedTab = savedInstanceState.getInt("selectedTab");
+    	} else {
+    		m_selectedTab = getIntent().getIntExtra("selectedTab", 0);
     	}
     	
    		actionBar.selectTab(actionBar.getTabAt(m_selectedTab));
@@ -120,6 +138,8 @@ public class MainActivity extends CommonActivity {
 			alert.show();
 		}
     	
+    	actionBar.setDisplayHomeAsUpEnabled(m_baseDirectory.length() > 0);
+    	
     	((ViewGroup)findViewById(R.id.comics_list)).setLayoutTransition(new LayoutTransition());
     }
     
@@ -134,6 +154,49 @@ public class MainActivity extends CommonActivity {
 		super.onSaveInstanceState(out);
 
 		out.putInt("selectedTab", m_selectedTab);
+		out.putString("baseDir", m_baseDirectory);
 	}
+    
+    public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			if (m_baseDirectory.length() > 0) {
+				finish();
+			}			
+			return true;
+		default:
+			Log.d(TAG,
+					"onOptionsItemSelected, unhandled id=" + item.getItemId());
+			return super.onOptionsItemSelected(item);
+		}
+	}
+    
+    @Override
+	public void onComicArchiveSelected(String fileName) {
+		super.onComicArchiveSelected(fileName);
+		
+		File file = new File(m_prefs.getString("comics_directory", "") + "/" + fileName);
+		
+		if (file.isDirectory()) {
+			Intent intent = new Intent(MainActivity.this,
+					MainActivity.class);
+
+			intent.putExtra("baseDir", fileName);
+			intent.putExtra("selectedTab", m_selectedTab);
+
+			startActivityForResult(intent, 0); 
+			
+			
+			
+		} else if (file.canRead()) {
+			Intent intent = new Intent(MainActivity.this,
+					ViewComicActivity.class);
+
+			intent.putExtra("fileName", fileName);
+
+			startActivityForResult(intent, 0); 
+		}
+	}
+
 	
 }
