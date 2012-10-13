@@ -19,6 +19,7 @@ public class MainActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private TabListener m_tabListener = new TabListener();
+	private int m_selectedTab;
 	
 	private class TabListener implements ActionBar.TabListener {
 
@@ -27,26 +28,25 @@ public class MainActivity extends CommonActivity {
 		}
 
 		public void onTabSelected(Tab tab, android.app.FragmentTransaction ft) {
-			// TODO Auto-generated method stub
-			
-			Log.d(TAG, "POS=" + tab.getPosition());
-			
 			FragmentTransaction sft = getSupportFragmentManager().beginTransaction();
 			
-			switch (tab.getPosition()) {
-			case 0:
-				sft.replace(R.id.comics_list, new ComicListFragment(), FRAG_COMICS_LIST);				
-				break;
-			case 1:
-				sft.replace(R.id.comics_list, new ComicListFragment(1), FRAG_COMICS_LIST);
-				break;
-			case 2:
-				sft.replace(R.id.comics_list, new ComicListFragment(2), FRAG_COMICS_LIST);
-				break;			
+			if (m_selectedTab != tab.getPosition() && m_selectedTab != -1) {
+				switch (tab.getPosition()) {
+				case 0:
+					sft.replace(R.id.comics_list, new ComicListFragment(), FRAG_COMICS_LIST);				
+					break;
+				case 1:
+					sft.replace(R.id.comics_list, new ComicListFragment(1), FRAG_COMICS_LIST);
+					break;
+				case 2:
+					sft.replace(R.id.comics_list, new ComicListFragment(2), FRAG_COMICS_LIST);
+					break;			
+				}
 			}
 			
-			sft.commit();
+			m_selectedTab = tab.getPosition();
 			
+			sft.commit();			
 		}
 
 		public void onTabUnselected(Tab tab, android.app.FragmentTransaction ft) {
@@ -63,17 +63,17 @@ public class MainActivity extends CommonActivity {
         requestWindowFeature(Window.FEATURE_PROGRESS);
         
         setContentView(R.layout.activity_main);
+
+        setProgressBarVisibility(false);
         
-        int tabIndex = 0;
+        setSmallScreen(findViewById(R.id.tablet_layout_hack) == null);
         
     	if (savedInstanceState == null) {
     		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-    		
     		ft.replace(R.id.comics_list, new ComicListFragment(), FRAG_COMICS_LIST);
-    		
     		ft.commit();    		
     	} else {
-    		tabIndex = savedInstanceState.getInt("tabIndex");
+        	m_selectedTab = -1;
     	}
 
     	ActionBar actionBar = getActionBar();
@@ -92,10 +92,11 @@ public class MainActivity extends CommonActivity {
     			.setText(R.string.tab_finished)
     			.setTabListener(m_tabListener));
 
-    	if (tabIndex != 0) {
-    		actionBar.selectTab(actionBar.getTabAt(tabIndex));
+    	if (savedInstanceState != null) {
+    		m_selectedTab = savedInstanceState.getInt("selectedTab");
     	}
     	
+   		actionBar.selectTab(actionBar.getTabAt(m_selectedTab));
 	
     	if (m_prefs.getString("comics_directory", null) == null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -132,7 +133,7 @@ public class MainActivity extends CommonActivity {
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
 
-		out.putInt("tabIndex", getActionBar().getSelectedTab().getPosition());
+		out.putInt("selectedTab", m_selectedTab);
 	}
 	
 }

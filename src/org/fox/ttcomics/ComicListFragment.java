@@ -74,7 +74,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				
 				
-				v = vi.inflate(m_activity.isPortrait() ? R.layout.comics_list_row : R.layout.comics_grid_row, null);
+				v = vi.inflate(ComicListFragment.this.getView().findViewById(R.id.comics_list) != null ? R.layout.comics_list_row : R.layout.comics_grid_row, null);
 
 			}
 			
@@ -129,11 +129,15 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		
 		if (savedInstanceState != null) {
 			m_mode = savedInstanceState.getInt("mode");
+			m_files = savedInstanceState.getStringArrayList("files");
 		}
+
+		
+		Log.d(TAG, "files count=" + m_files);
 
        	m_adapter = new ComicsListAdapter(getActivity(), R.layout.comics_list_row, m_files);
 
-		if (m_activity.isPortrait()) {
+		if (view.findViewById(R.id.comics_list) != null) {
 			ListView list = (ListView) view.findViewById(R.id.comics_list);
 			list.setAdapter(m_adapter);
 			list.setEmptyView(view.findViewById(R.id.no_comics));
@@ -245,8 +249,10 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 									
 										if (!thumbnailDir.isDirectory()) { thumbnailDir.mkdirs(); };
 										
-										if (thumbnailDir.isDirectory()) {
-											FileOutputStream fos = new FileOutputStream(thumbnailDir.getAbsolutePath() + "/" + fileName);							
+										File thumbnailFile = new File(thumbnailDir.getAbsolutePath() + "/" + fileName);
+										
+										if (thumbnailDir.isDirectory() && !thumbnailFile.exists()) {
+											FileOutputStream fos = new FileOutputStream(thumbnailFile.getAbsolutePath());							
 											
 											byte[] buffer = new byte[1024];
 											int len = 0;
@@ -336,6 +342,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		super.onSaveInstanceState(out);
 
 		out.putInt("mode", m_mode);
+		out.putStringArrayList("files", m_files);
 	}
 	
 }

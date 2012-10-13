@@ -29,7 +29,7 @@ public class ViewComicActivity extends CommonActivity {
         setTheme(m_prefs.getBoolean("use_dark_theme", false) ? R.style.DarkTheme : R.style.AppTheme);
         
         setContentView(R.layout.activity_view_comic);
-
+        
         if (savedInstanceState == null) {
         	m_fileName = getIntent().getStringExtra("fileName"); 
         	

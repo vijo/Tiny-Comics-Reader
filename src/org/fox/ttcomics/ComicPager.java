@@ -31,8 +31,6 @@ public class ComicPager extends Fragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			Log.d(TAG, "getItem=" + position);
-			
 			try {
 				return new ComicFragment(m_archive.getItem(position));
 

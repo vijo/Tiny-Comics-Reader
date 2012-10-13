@@ -3,6 +3,8 @@ package org.fox.ttcomics;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -35,7 +37,13 @@ public class CbzComicArchive {
 				m_entries.add(ze);
 				m_count++;
 			}
-		}		
+		}
+		
+		Collections.sort(m_entries, new Comparator<ZipEntry>() {
+		    public int compare(ZipEntry a, ZipEntry b) {
+		        return a.getName().compareTo(b.getName());
+		    }
+		});
 		
 	}
 

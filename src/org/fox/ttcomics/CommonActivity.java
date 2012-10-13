@@ -19,6 +19,8 @@ public class CommonActivity extends FragmentActivity {
 
 	protected SharedPreferences m_prefs;
 
+	private boolean m_smallScreenMode = true;
+
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +28,16 @@ public class CommonActivity extends FragmentActivity {
     	m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         
 	}
+
+	protected void setSmallScreen(boolean smallScreen) {
+		Log.d(TAG, "m_smallScreenMode=" + smallScreen);
+		m_smallScreenMode = smallScreen;
+	}
+
+	public boolean isSmallScreen() {
+		return m_smallScreenMode;
+	}
+
 	
 	public void onComicArchiveSelected(String fileName) {
 		
