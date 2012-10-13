@@ -70,10 +70,10 @@ public class ViewComicActivity extends CommonActivity {
 					.setTitle("Go to...")
 					.setItems(
 							new String[] {
-									"Beginning",
-									"Furthest read location",
-									"Location...",
-									"End" 
+									getString(R.string.dialog_location_beginning),
+									getString(R.string.dialog_location_furthest),
+									getString(R.string.dialog_location_location),
+									getString(R.string.dialog_location_end) 
 									},
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
@@ -101,14 +101,14 @@ public class ViewComicActivity extends CommonActivity {
 
 										Dialog seekDialog = new Dialog(ViewComicActivity.this);
 										AlertDialog.Builder seekBuilder = new AlertDialog.Builder(ViewComicActivity.this)
-											.setTitle("Go to location")
+											.setTitle(R.string.dialog_open_location)
 											.setView(contentView)
-											.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+											.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 												
 												public void onClick(DialogInterface dialog, int which) {
 													dialog.cancel();													
 												}
-											}).setPositiveButton("Go to location", new DialogInterface.OnClickListener() {
+											}).setPositiveButton(R.string.dialog_open_location, new DialogInterface.OnClickListener() {
 												
 												public void onClick(DialogInterface dialog, int which) {
 													dialog.cancel();

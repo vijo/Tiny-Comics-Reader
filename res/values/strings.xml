@@ -20,4 +20,9 @@
     <string name="comics_directory_default">/mnt/sdcard/Comics</string>
     <string name="prefs_reading">Reading</string>
     <string name="prefs_dark_theme">Use dark theme</string>
+    <string name="dialog_open_location">Open location</string>
+    <string name="dialog_location_beginning">Beginning</string>
+    <string name="dialog_location_furthest">Furthest read location</string>
+    <string name="dialog_location_location">Location...</string>
+    <string name="dialog_location_end">End</string>
 </resources>
