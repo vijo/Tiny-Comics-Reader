@@ -31,7 +31,6 @@
         
         <activity
             android:name=".ViewComicActivity"
-            android:theme="@style/DarkTheme"
             android:label="@string/title_activity_main">
         </activity>
 

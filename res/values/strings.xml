@@ -18,4 +18,6 @@
     <string name="dialog_need_prefs_preferences">Preferences</string>
     <string name="cancel">Cancel</string>
     <string name="comics_directory_default">/mnt/sdcard/Comics</string>
+    <string name="prefs_reading">Reading</string>
+    <string name="prefs_dark_theme">Use dark theme</string>
 </resources>

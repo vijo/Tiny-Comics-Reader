@@ -7,11 +7,17 @@
             android:hint="@string/comics_directory_default"
             android:title="@string/prefs_comics_directory" >
         </EditTextPreference>
-
+    </PreferenceCategory>
+        	
+    <PreferenceCategory android:title="@string/prefs_reading" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="use_dark_theme"
+            android:title="@string/prefs_dark_theme" />
+        
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="dim_status_bar"
             android:title="@string/prefs_dim_status_bar" />
-    </PreferenceCategory>
-
+	</PreferenceCategory>
 </PreferenceScreen>

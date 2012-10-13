@@ -20,6 +20,8 @@ public class ViewComicActivity extends CommonActivity {
         
         requestWindowFeature(Window.FEATURE_PROGRESS);
         
+        setTheme(m_prefs.getBoolean("use_dark_theme", false) ? R.style.DarkTheme : R.style.AppTheme);
+        
         setContentView(R.layout.activity_view_comic);
 
         if (savedInstanceState == null) {
