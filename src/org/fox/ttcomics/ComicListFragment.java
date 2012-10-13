@@ -110,7 +110,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				}
 			}
 			
-			File thumbnailFile = new File(CommonActivity.getCacheFileName(fileBaseName));
+			File thumbnailFile = new File(CommonActivity.getCacheFileName(file.getAbsolutePath()));
 
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
