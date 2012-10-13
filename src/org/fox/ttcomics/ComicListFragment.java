@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,11 +25,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -70,10 +69,11 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
 
-			String fileName = items.get(position);
+			File file = new File(items.get(position));
+			String fileBaseName = file.getName();
 
-			int lastPos = m_activity.getLastPosition(fileName);
-			int size = m_activity.getSize(fileName);
+			int lastPos = m_activity.getLastPosition(file.getAbsolutePath());
+			int size = m_activity.getSize(file.getAbsolutePath());
 
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -86,7 +86,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			TextView name = (TextView) v.findViewById(R.id.file_name);
 			
 			if (name != null) {
-				name.setText(fileName);
+				name.setText(fileBaseName);
 			}
 
 			TextView info = (TextView) v.findViewById(R.id.file_progress_info);
@@ -110,7 +110,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				}
 			}
 			
-			File thumbnailFile = new File(Environment.getExternalStorageDirectory() + "/" + m_activity.THUMBNAIL_PATH + "/" + fileName);
+			File thumbnailFile = new File(CommonActivity.getCacheFileName(fileBaseName));
 
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
@@ -140,9 +140,6 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			m_mode = savedInstanceState.getInt("mode");
 			m_files = savedInstanceState.getStringArrayList("files");
 		}
-
-		
-		Log.d(TAG, "files count=" + m_files);
 
        	m_adapter = new ComicsListAdapter(getActivity(), R.layout.comics_list_row, m_files);
 
@@ -189,6 +186,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		case R.id.menu_reset_progress:
 			if (fileName != null) {
 				m_activity.setLastPosition(fileName, 0);
+				m_activity.setLastMaxPosition(fileName, 0);
 				m_adapter.notifyDataSetChanged();
 			}
 			return true;
@@ -229,7 +227,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			protected Integer doInBackground(String... params) {
 		    	String comicsDir = params[0];
 
-		    	File dir = new File(comicsDir + "/" + m_baseDirectory);
+		    	File dir = new File(comicsDir);
 		    		
 	    		m_files.clear();
 	    		
@@ -242,12 +240,10 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 	    			java.util.Arrays.sort(archives);
 	    			
 	    			for (File archive : archives) {
-	    				String fileName = archive.getName();
-	    				
 	    				if (archive.isDirectory() && m_mode == 0) {
-	    					m_files.add(archive.getName());
+	    					m_files.add(archive.getAbsolutePath());
 	    					
-	    				} else if (fileName.toLowerCase().matches(".*\\.(cbz|zip)") && isAdded() && m_activity != null) {
+	    				} else if (archive.getName().toLowerCase().matches(".*\\.(cbz|zip)") && isAdded() && m_activity != null) {
 	    					try {
 								CbzComicArchive cba = new CbzComicArchive(archive.getAbsolutePath());
 								
@@ -261,7 +257,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 									
 										if (!thumbnailDir.isDirectory()) { thumbnailDir.mkdirs(); };
 										
-										File thumbnailFile = new File(thumbnailDir.getAbsolutePath() + "/" + fileName);
+										File thumbnailFile = new File(CommonActivity.getCacheFileName(archive.getAbsolutePath()));
 										
 										if (thumbnailDir.isDirectory() && !thumbnailFile.exists()) {
 											FileOutputStream fos = new FileOutputStream(thumbnailFile.getAbsolutePath());							
@@ -279,30 +275,30 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 										e.printStackTrace();
 									}
 									
-									int lastPos = m_activity.getLastPosition(fileName); 
+									int lastPos = m_activity.getLastPosition(archive.getAbsolutePath()); 
 									
 									switch (m_mode) {
 									case 0:
-										m_files.add(fileName);
+										m_files.add(archive.getAbsolutePath());
 										break;
 									case 1:
 										if (lastPos == 0) {
-											m_files.add(fileName);
+											m_files.add(archive.getAbsolutePath());
 										}
 										break;
 									case 2:
 										if (lastPos > 0 && lastPos != cba.getCount()-1) {
-											m_files.add(fileName);
+											m_files.add(archive.getAbsolutePath());
 										}
 										break;
 									case 3:
 										if (lastPos == cba.getCount()-1) {
-											m_files.add(fileName);
+											m_files.add(archive.getAbsolutePath());
 										}
 										break;								
 									}
 									
-									m_activity.setSize(fileName, cba.getCount());
+									m_activity.setSize(archive.getAbsolutePath(), cba.getCount());
 								}
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -330,7 +326,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		String comicsDir = m_prefs.getString("comics_directory", null);
 		
 		if (comicsDir != null) {
-			rescanTask.execute(comicsDir);
+			rescanTask.execute(m_baseDirectory.length() > 0 ? m_baseDirectory : comicsDir);
 		}
 	}
 	

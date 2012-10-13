@@ -1,10 +1,13 @@
 package org.fox.ttcomics;
 
 import java.io.File;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -67,6 +70,15 @@ public class CommonActivity extends FragmentActivity {
     	editor.commit();
 	}
 	
+	public void setLastMaxPosition(String fileName, int position) {
+    	SharedPreferences lastread = getSharedPreferences("lastread", 0);
+    	
+    	SharedPreferences.Editor editor = lastread.edit();    	
+    	editor.putInt(fileName + ":max", position);
+    	
+    	editor.commit();
+	}
+	
 	public int getLastPosition(String fileName) { 
 		SharedPreferences lastread = getSharedPreferences("lastread", 0);
 	
@@ -120,5 +132,33 @@ public class CommonActivity extends FragmentActivity {
 		
 	    return width < height;
 	}
-	
+
+	protected static String md5(String s) {
+		try {
+			MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+	        digest.update(s.getBytes());
+	        byte messageDigest[] = digest.digest();
+	        
+	        StringBuffer hexString = new StringBuffer();
+	        for (int i=0; i<messageDigest.length; i++)
+	            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+	        
+	        return hexString.toString();
+	        
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	public static String getCacheFileName(String fileName) {
+		String hashedUrl = md5(fileName);
+		
+		File storage = Environment.getExternalStorageDirectory();
+		
+		File file = new File(storage.getAbsolutePath() + THUMBNAIL_PATH + "/" + hashedUrl + ".png");
+		
+		return file.getAbsolutePath();
+	}
 }

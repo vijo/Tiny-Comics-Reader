@@ -9,7 +9,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
@@ -175,7 +174,7 @@ public class MainActivity extends CommonActivity {
 	public void onComicArchiveSelected(String fileName) {
 		super.onComicArchiveSelected(fileName);
 		
-		File file = new File(m_prefs.getString("comics_directory", "") + "/" + fileName);
+		File file = new File(fileName);
 		
 		if (file.isDirectory()) {
 			Intent intent = new Intent(MainActivity.this,

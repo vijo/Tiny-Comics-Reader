@@ -1,7 +1,6 @@
 package org.fox.ttcomics;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -11,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +99,7 @@ public class ComicPager extends Fragment {
 		}
 		
 		try {
-			m_archive = new CbzComicArchive(m_prefs.getString("comics_directory", "") + "/" + m_fileName);
+			m_archive = new CbzComicArchive(m_fileName);
 			
 			int position = m_activity.getLastPosition(m_fileName);
 			

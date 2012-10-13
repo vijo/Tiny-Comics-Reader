@@ -1,9 +1,10 @@
 package org.fox.ttcomics;
+import java.io.File;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -41,7 +42,7 @@ public class ViewComicActivity extends CommonActivity {
         }
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        setTitle(m_fileName);
+        setTitle(new File(m_fileName).getName());
     }
     
     @Override
@@ -49,10 +50,6 @@ public class ViewComicActivity extends CommonActivity {
         getMenuInflater().inflate(R.menu.activity_view_comic, menu);
         return true;
     }
-    
-    /* public void onComicSelected(String fileName, int position, int size) {
-    	super.onComicSelected(fileName, position, size);
-    } */
     
 	@Override
 	public void onSaveInstanceState(Bundle out) {

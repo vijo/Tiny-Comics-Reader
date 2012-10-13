@@ -9,8 +9,6 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import android.util.Log;
-
 public class CbzComicArchive extends ComicArchive {
 	private final String TAG = this.getClass().getSimpleName();
 	
