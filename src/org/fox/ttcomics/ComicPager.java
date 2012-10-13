@@ -57,6 +57,32 @@ public class ComicPager extends Fragment {
 		super();
 	}
 	
+	public int getCount() {
+		return m_adapter.getCount();
+	}
+	
+	public int getPosition() {
+		ViewPager pager = (ViewPager) getView().findViewById(R.id.comics_pager);
+		
+		if (pager != null) {
+			return pager.getCurrentItem();
+		}
+		
+		return 0;
+	}
+	
+	public String getFileName() {
+		return m_fileName;
+	}
+	
+	public void setCurrentItem(int item) {
+		ViewPager pager = (ViewPager) getView().findViewById(R.id.comics_pager);
+		
+		if (pager != null) {
+			pager.setCurrentItem(item);
+		}
+	}
+	
 	public ComicPager(String fileName) {
 		super();
 		

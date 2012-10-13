@@ -1,12 +1,18 @@
 package org.fox.ttcomics;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.NumberPicker;
 
 public class ViewComicActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -59,6 +65,77 @@ public class ViewComicActivity extends CommonActivity {
 		switch (item.getItemId()) {
 		case R.id.menu_go_location:
 			
+			Dialog dialog = new Dialog(ViewComicActivity.this);
+			AlertDialog.Builder builder = new AlertDialog.Builder(ViewComicActivity.this)
+					.setTitle("Go to...")
+					.setItems(
+							new String[] {
+									"Beginning",
+									"Furthest read location",
+									"Location...",
+									"End" 
+									},
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									
+									final ComicPager cp = (ComicPager) getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_COMICS_PAGER);
+
+									switch (which) {
+									case 0:
+										cp.setCurrentItem(0);										
+										break;
+									case 1:
+										cp.setCurrentItem(getMaxPosition(m_fileName));
+										break;
+									case 2:										
+										
+										LayoutInflater inflater = getLayoutInflater();
+										View contentView = inflater.inflate(R.layout.dialog_location, null);
+
+										final NumberPicker picker = (NumberPicker) contentView.findViewById(R.id.number_picker); 
+												
+										picker.setMinValue(1);
+										picker.setMaxValue(getSize(m_fileName));
+										picker.setValue(cp.getPosition()+1);
+
+										Dialog seekDialog = new Dialog(ViewComicActivity.this);
+										AlertDialog.Builder seekBuilder = new AlertDialog.Builder(ViewComicActivity.this)
+											.setTitle("Go to location")
+											.setView(contentView)
+											.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+												
+												public void onClick(DialogInterface dialog, int which) {
+													dialog.cancel();													
+												}
+											}).setPositiveButton("Go to location", new DialogInterface.OnClickListener() {
+												
+												public void onClick(DialogInterface dialog, int which) {
+													dialog.cancel();
+													
+													cp.setCurrentItem(picker.getValue()-1);
+													
+												}
+											});
+										
+										seekDialog = seekBuilder.create();
+										seekDialog.show();
+
+										
+										break;
+									case 3:
+										cp.setCurrentItem(cp.getCount()-1);										
+										break;
+									}
+									
+									dialog.cancel();
+								}
+							});
+
+			dialog = builder.create();
+			dialog.show();
+
+			
 			// TODO display dialog: Beginning, Page..., Last unread			
 			
 			return true;
@@ -71,5 +148,5 @@ public class ViewComicActivity extends CommonActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-    
+	
 }
