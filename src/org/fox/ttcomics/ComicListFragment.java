@@ -235,7 +235,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 	    			for (File archive : archives) {
 	    				String fileName = archive.getName();
 	    				
-	    				if (fileName.indexOf(".cbz") != -1 && isAdded() && m_activity != null) {
+	    				if (fileName.toLowerCase().matches(".*\\.(cbz|zip)") && isAdded() && m_activity != null) {
 	    					try {
 								CbzComicArchive cba = new CbzComicArchive(comicsDir + "/" + fileName);
 								

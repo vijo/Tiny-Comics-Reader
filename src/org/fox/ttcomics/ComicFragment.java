@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ public class ComicFragment extends Fragment {
 		
 		View view = inflater.inflate(R.layout.fragment_comic, container, false);
 		
-		ImageView image = (ImageView) view.findViewById(R.id.comic_image);
+		TouchImageView image = (TouchImageView) view.findViewById(R.id.comic_image);
 		
 		if (savedInstanceState != null) {
 			m_comic = savedInstanceState.getParcelable("comic");
@@ -42,8 +43,17 @@ public class ComicFragment extends Fragment {
 		
 		if (m_comic != null) {
 			image.setImageBitmap(m_comic);
+			image.setMaxZoom(4f);
+			image.setOnScaleChangedListener(new TouchImageView.OnScaleChangedListener() {
+				
+				public void onScaleChanged(float scale) {
+					ViewPager pager = (ViewPager) getActivity().findViewById(R.id.comics_pager);
+					
+					pager.setPagingEnabled(scale - 1.0f < 0.01);
+				}
+			});
 		}
-	
+		
 		return view;
 		
 	}
