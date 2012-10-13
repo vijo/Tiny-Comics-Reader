@@ -1,5 +1,6 @@
 package org.fox.ttcomics;
 
+import android.animation.LayoutTransition;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.Window;
 
 public class MainActivity extends CommonActivity {
@@ -110,12 +112,14 @@ public class MainActivity extends CommonActivity {
 			       })
 			       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
-			                dialog.cancel();
+			                dialog.cancel();			                
 			           }
 			       });
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
+    	
+    	((ViewGroup)findViewById(R.id.comics_list)).setLayoutTransition(new LayoutTransition());
     }
     
     @Override
