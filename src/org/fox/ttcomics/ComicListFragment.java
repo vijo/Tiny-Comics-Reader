@@ -116,8 +116,17 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			
 			if (thumbnail != null) {
 				if (thumbnailFile.exists()) {
-					Bitmap bmp = BitmapFactory.decodeFile(thumbnailFile.getAbsolutePath());
+					//
 					
+				    final BitmapFactory.Options options = new BitmapFactory.Options();
+				    options.inJustDecodeBounds = true;
+				    BitmapFactory.decodeFile(thumbnailFile.getAbsolutePath(), options);
+
+				    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 200, 200);
+				    options.inJustDecodeBounds = false;
+				    
+				    Bitmap bmp = BitmapFactory.decodeFile(thumbnailFile.getAbsolutePath(), options);
+				    
 					if (bmp != null) {
 						thumbnail.setImageBitmap(bmp);
 					}

@@ -1,5 +1,6 @@
 package org.fox.ttcomics;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import android.app.Activity;
@@ -27,9 +28,22 @@ public class ComicFragment extends Fragment {
 		super();
 	}
 	
-	public ComicFragment(InputStream is, int page) {
+	public ComicFragment(ComicArchive archive, int page) {
 		super();
-		m_comic = BitmapFactory.decodeStream(is);
+		try {			
+			final BitmapFactory.Options options = new BitmapFactory.Options();
+		    options.inJustDecodeBounds = true;
+		    BitmapFactory.decodeStream(archive.getItem(page), null, options);
+
+		    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
+		    options.inJustDecodeBounds = false;
+		    
+			m_comic = BitmapFactory.decodeStream(archive.getItem(page), null, options);
+		} catch (OutOfMemoryError e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		m_page = page;
 	}
 	

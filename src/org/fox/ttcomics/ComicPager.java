@@ -28,15 +28,7 @@ public class ComicPager extends Fragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			try {
-				return new ComicFragment(m_archive.getItem(position), position+1);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			return null;
+			return new ComicFragment(m_archive, position+1);
 		}
 
 		@Override
