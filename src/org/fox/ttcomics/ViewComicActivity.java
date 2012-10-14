@@ -90,7 +90,8 @@ public class ViewComicActivity extends CommonActivity {
 				
 				Log.d(TAG, "FILE=" + tmpFile);
 				
-				InputStream is = pager.getArchive().getItem(pager.getPosition());
+				InputStream is = pager.getArchive().getItem(pager.getPosition()+1);
+				
 				FileOutputStream fos = new FileOutputStream(tmpFile);
 				
 				byte[] buffer = new byte[1024];
