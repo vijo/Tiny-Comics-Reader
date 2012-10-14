@@ -3,6 +3,7 @@ package org.fox.ttcomics;
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 import android.content.Context;
 import android.content.Intent;
@@ -186,5 +187,22 @@ public class CommonActivity extends FragmentActivity {
 	        }
 	    }
 	    return inSampleSize;
-}
+	}
+	
+	
+	public void cleanupCache(boolean deleteAll) {
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+			File cachePath = getExternalCacheDir();
+		
+			long now = new Date().getTime();
+			
+			if (cachePath.isDirectory()) {
+				for (File file : cachePath.listFiles()) {
+					if (deleteAll || now - file.lastModified() > 1000*60*60*24*7) {
+						file.delete();
+					}					
+				}				
+			}
+		}
+	}
 }

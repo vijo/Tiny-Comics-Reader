@@ -328,6 +328,10 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 	    			}
 	    		}
 				
+	    		if (isAdded() && m_activity != null) {
+	    			m_activity.cleanupCache(false);
+	    		}
+	    		
 				return m_files.size();
 			}
 			
