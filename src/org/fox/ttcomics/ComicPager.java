@@ -114,8 +114,8 @@ public class ComicPager extends Fragment {
 				m_activity.onComicSelected(m_fileName, position);
 
 				m_activity.setProgress(Math.round(((float)position / (float)m_archive.getCount()) * 10000));
-				
-				if (m_prefs.getBoolean("dim_status_bar", false)) {
+								
+				if (!CommonActivity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
 					view.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
 				}
 			}

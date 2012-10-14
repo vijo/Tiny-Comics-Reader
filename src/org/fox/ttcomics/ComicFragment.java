@@ -40,7 +40,11 @@ public class ComicFragment extends Fragment {
 		    options.inJustDecodeBounds = true;
 		    BitmapFactory.decodeStream(archive.getItem(page), null, options);
 
-	    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
+		    if (CommonActivity.isCompatMode()) {
+		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 256, 256);
+		    } else {
+		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
+		    }
 		    options.inJustDecodeBounds = false;
 		    
 			return BitmapFactory.decodeStream(archive.getItem(page), null, options);
@@ -73,6 +77,10 @@ public class ComicFragment extends Fragment {
 		ComicPager pager = (ComicPager) getActivity().getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_COMICS_PAGER);
 		
 		if (pager != null) {
+			if (CommonActivity.isCompatMode() && m_prefs.getBoolean("use_dark_theme", false)) {
+				image.setBackgroundColor(0xff000000);
+			}
+			
 			image.setImageBitmap(loadImage(pager.getArchive(), m_page));
 			image.setMaxZoom(4f);
 			image.setOnScaleChangedListener(new TouchImageView.OnScaleChangedListener() {

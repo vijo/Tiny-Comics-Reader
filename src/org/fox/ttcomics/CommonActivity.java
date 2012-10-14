@@ -36,6 +36,10 @@ public class CommonActivity extends FragmentActivity {
     	m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         
 	}
+	
+	public static boolean isCompatMode() {
+		return android.os.Build.VERSION.SDK_INT <= 10;		
+	}
 
 	protected void setSmallScreen(boolean smallScreen) {
 		Log.d(TAG, "m_smallScreenMode=" + smallScreen);

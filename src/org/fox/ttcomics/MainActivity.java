@@ -3,6 +3,7 @@ package org.fox.ttcomics;
 import java.io.File;
 
 import android.animation.LayoutTransition;
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
@@ -20,10 +21,11 @@ import android.widget.ShareActionProvider;
 public class MainActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
 	
-	private TabListener m_tabListener = new TabListener();
+	private TabListener m_tabListener;
 	private int m_selectedTab;
 	private String m_baseDirectory = "";
 	
+	@SuppressLint("NewApi")
 	private class TabListener implements ActionBar.TabListener {
 
 		public void onTabReselected(Tab tab, android.app.FragmentTransaction ft) {
@@ -88,33 +90,39 @@ public class MainActivity extends CommonActivity {
         	m_baseDirectory = savedInstanceState.getString("baseDir");
     	}
     	
-    	ActionBar actionBar = getActionBar();
-    	
-    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-    	
-    	actionBar.addTab(getActionBar().newTab()
-    			.setText(R.string.tab_all_comics)
-    			.setTabListener(m_tabListener));
-
-    	actionBar.addTab(getActionBar().newTab()
-    			.setText(R.string.tab_unread)
-    			.setTabListener(m_tabListener));
-
-    	actionBar.addTab(getActionBar().newTab()
-    			.setText(R.string.tab_unfinished)
-    			.setTabListener(m_tabListener));
-
-    	actionBar.addTab(getActionBar().newTab()
-    			.setText(R.string.tab_read)
-    			.setTabListener(m_tabListener));
-
-    	if (savedInstanceState != null) {
-    		m_selectedTab = savedInstanceState.getInt("selectedTab");
-    	} else {
-    		m_selectedTab = getIntent().getIntExtra("selectedTab", 0);
+    	if (!isCompatMode()) {
+    		m_tabListener = new TabListener();
+    		
+	    	ActionBar actionBar = getActionBar();
+	    	
+	    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+	    	
+	    	actionBar.addTab(getActionBar().newTab()
+	    			.setText(R.string.tab_all_comics)
+	    			.setTabListener(m_tabListener));
+	
+	    	actionBar.addTab(getActionBar().newTab()
+	    			.setText(R.string.tab_unread)
+	    			.setTabListener(m_tabListener));
+	
+	    	actionBar.addTab(getActionBar().newTab()
+	    			.setText(R.string.tab_unfinished)
+	    			.setTabListener(m_tabListener));
+	
+	    	actionBar.addTab(getActionBar().newTab()
+	    			.setText(R.string.tab_read)
+	    			.setTabListener(m_tabListener));
+	
+	    	if (savedInstanceState != null) {
+	    		m_selectedTab = savedInstanceState.getInt("selectedTab");
+	    	} else {
+	    		m_selectedTab = getIntent().getIntExtra("selectedTab", 0);
+	    	}
+	    	
+	   		actionBar.selectTab(actionBar.getTabAt(m_selectedTab));
+	   		
+	    	actionBar.setDisplayHomeAsUpEnabled(m_baseDirectory.length() > 0);
     	}
-    	
-   		actionBar.selectTab(actionBar.getTabAt(m_selectedTab));
 	
     	if (m_prefs.getString("comics_directory", null) == null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -138,9 +146,9 @@ public class MainActivity extends CommonActivity {
 			alert.show();
 		}
     	
-    	actionBar.setDisplayHomeAsUpEnabled(m_baseDirectory.length() > 0);
-    	
-    	((ViewGroup)findViewById(R.id.comics_list)).setLayoutTransition(new LayoutTransition());
+    	if (!isCompatMode()) {
+    		((ViewGroup)findViewById(R.id.comics_list)).setLayoutTransition(new LayoutTransition());
+    	}
     }
     
     @Override

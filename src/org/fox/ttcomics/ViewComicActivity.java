@@ -54,7 +54,10 @@ public class ViewComicActivity extends CommonActivity {
         	m_tmpFileName = savedInstanceState.getString("tmpFileName");
         }
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (!isCompatMode()) {
+        	getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        
         setTitle(new File(m_fileName).getName());
         
         if (m_prefs.getBoolean("use_full_screen", false)) {
@@ -166,38 +169,38 @@ public class ViewComicActivity extends CommonActivity {
 										cp.setCurrentItem(getMaxPosition(m_fileName));
 										break;
 									case 2:										
-										
-										LayoutInflater inflater = getLayoutInflater();
-										View contentView = inflater.inflate(R.layout.dialog_location, null);
-
-										final NumberPicker picker = (NumberPicker) contentView.findViewById(R.id.number_picker); 
-												
-										picker.setMinValue(1);
-										picker.setMaxValue(getSize(m_fileName));
-										picker.setValue(cp.getPosition()+1);
-
-										Dialog seekDialog = new Dialog(ViewComicActivity.this);
-										AlertDialog.Builder seekBuilder = new AlertDialog.Builder(ViewComicActivity.this)
-											.setTitle(R.string.dialog_open_location)
-											.setView(contentView)
-											.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-												
-												public void onClick(DialogInterface dialog, int which) {
-													dialog.cancel();													
-												}
-											}).setPositiveButton(R.string.dialog_open_location, new DialogInterface.OnClickListener() {
-												
-												public void onClick(DialogInterface dialog, int which) {
-													dialog.cancel();
+										if (!isCompatMode()) {
+											LayoutInflater inflater = getLayoutInflater();
+											View contentView = inflater.inflate(R.layout.dialog_location, null);
+	
+											final NumberPicker picker = (NumberPicker) contentView.findViewById(R.id.number_picker); 
 													
-													cp.setCurrentItem(picker.getValue()-1);
+											picker.setMinValue(1);
+											picker.setMaxValue(getSize(m_fileName));
+											picker.setValue(cp.getPosition()+1);
+	
+											Dialog seekDialog = new Dialog(ViewComicActivity.this);
+											AlertDialog.Builder seekBuilder = new AlertDialog.Builder(ViewComicActivity.this)
+												.setTitle(R.string.dialog_open_location)
+												.setView(contentView)
+												.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 													
-												}
-											});
-										
-										seekDialog = seekBuilder.create();
-										seekDialog.show();
-
+													public void onClick(DialogInterface dialog, int which) {
+														dialog.cancel();													
+													}
+												}).setPositiveButton(R.string.dialog_open_location, new DialogInterface.OnClickListener() {
+													
+													public void onClick(DialogInterface dialog, int which) {
+														dialog.cancel();
+														
+														cp.setCurrentItem(picker.getValue()-1);
+														
+													}
+												});
+											
+											seekDialog = seekBuilder.create();
+											seekDialog.show();
+										}
 										
 										break;
 									case 3:

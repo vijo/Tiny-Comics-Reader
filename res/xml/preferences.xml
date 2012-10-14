@@ -9,7 +9,7 @@
         </EditTextPreference>
     </PreferenceCategory>
         	
-    <PreferenceCategory android:title="@string/prefs_reading" >
+    <PreferenceCategory android:title="@string/prefs_reading" android:key="prefs_reading">
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="use_dark_theme"
