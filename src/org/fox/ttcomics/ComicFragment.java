@@ -33,6 +33,8 @@ public class ComicFragment extends Fragment {
 	}
 	
 	public Bitmap loadImage(ComicArchive archive, int page) {
+		CommonActivity activity = (CommonActivity) getActivity();
+		
 		try {			
 			final BitmapFactory.Options options = new BitmapFactory.Options();
 		    options.inJustDecodeBounds = true;
@@ -42,9 +44,15 @@ public class ComicFragment extends Fragment {
 		    options.inJustDecodeBounds = false;
 		    
 			return BitmapFactory.decodeStream(archive.getItem(page), null, options);
-		} catch (OutOfMemoryError e) {			
+		} catch (OutOfMemoryError e) {
+			if (activity != null) {		
+				activity.toast(R.string.error_out_of_memory);
+			}
 			e.printStackTrace();
 		} catch (IOException e) {
+			if (activity != null) {
+				activity.toast(R.string.error_loading_image);
+			}
 			e.printStackTrace();
 		}
 		
