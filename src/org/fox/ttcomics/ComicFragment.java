@@ -21,30 +21,34 @@ public class ComicFragment extends Fragment {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private SharedPreferences m_prefs;
-	private Bitmap m_comic;
 	private int m_page;
 	
 	public ComicFragment() {
 		super();
 	}
 	
-	public ComicFragment(ComicArchive archive, int page) {
+	public ComicFragment(int page) {
 		super();
+		m_page = page;
+	}
+	
+	public Bitmap loadImage(ComicArchive archive, int page) {
 		try {			
 			final BitmapFactory.Options options = new BitmapFactory.Options();
 		    options.inJustDecodeBounds = true;
 		    BitmapFactory.decodeStream(archive.getItem(page), null, options);
 
-		    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
+	    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
 		    options.inJustDecodeBounds = false;
 		    
-			m_comic = BitmapFactory.decodeStream(archive.getItem(page), null, options);
-		} catch (OutOfMemoryError e) {
+			return BitmapFactory.decodeStream(archive.getItem(page), null, options);
+		} catch (OutOfMemoryError e) {			
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		m_page = page;
+		
+		return null;
 	}
 	
 	@Override
@@ -55,12 +59,13 @@ public class ComicFragment extends Fragment {
 		TouchImageView image = (TouchImageView) view.findViewById(R.id.comic_image);
 		
 		if (savedInstanceState != null) {
-			m_comic = savedInstanceState.getParcelable("comic");
 			m_page = savedInstanceState.getInt("page");
 		}
 		
-		if (m_comic != null) {
-			image.setImageBitmap(m_comic);
+		ComicPager pager = (ComicPager) getActivity().getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_COMICS_PAGER);
+		
+		if (pager != null) {
+			image.setImageBitmap(loadImage(pager.getArchive(), m_page));
 			image.setMaxZoom(4f);
 			image.setOnScaleChangedListener(new TouchImageView.OnScaleChangedListener() {
 				
@@ -94,8 +99,6 @@ public class ComicFragment extends Fragment {
 	@Override
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
-
-		out.putParcelable("comic", m_comic);
 		out.putInt("page", m_page);
 	}
 	

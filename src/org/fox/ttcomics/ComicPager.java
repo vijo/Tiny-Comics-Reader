@@ -28,14 +28,13 @@ public class ComicPager extends Fragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			return new ComicFragment(m_archive, position+1);
+			return new ComicFragment(position+1);
 		}
 
 		@Override
 		public int getCount() {
 			return m_archive.getCount();
 		}
-		
 	}
 
 	private PagerAdapter m_adapter;
@@ -79,7 +78,7 @@ public class ComicPager extends Fragment {
 		
 		m_fileName = fileName;
 	}
-
+	
 	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
@@ -88,7 +87,7 @@ public class ComicPager extends Fragment {
 	
 		m_adapter = new PagerAdapter(getActivity().getSupportFragmentManager());
 		
-		ViewPager pager = (ViewPager) view.findViewById(R.id.comics_pager);
+		final ViewPager pager = (ViewPager) view.findViewById(R.id.comics_pager);
 		
 		if (savedInstanceState != null) {
 			m_fileName = savedInstanceState.getString("fileName");
