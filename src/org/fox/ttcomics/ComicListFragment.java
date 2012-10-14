@@ -214,13 +214,15 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
 	}
 	
-	protected void rescan() {
+	protected void rescan(final boolean fullRescan) {
 
 		AsyncTask<String, Integer, Integer> rescanTask = new AsyncTask<String, Integer, Integer>() {
 
 			@Override
 			protected void onProgressUpdate(Integer... progress) {
-		         m_activity.setProgress(Math.round(((float)progress[0] / (float)progress[1]) * 10000));
+				if (isAdded()) {
+					m_activity.setProgress(Math.round(((float)progress[0] / (float)progress[1]) * 10000));
+				}
 		    }
 			
 			@Override
@@ -240,65 +242,74 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 	    			java.util.Arrays.sort(archives);
 	    			
 	    			for (File archive : archives) {
+	    				String filePath = archive.getAbsolutePath();
+	    				
 	    				if (archive.isDirectory() && m_mode == 0) {
-	    					m_files.add(archive.getAbsolutePath());
+	    					m_files.add(filePath);
 	    					
 	    				} else if (archive.getName().toLowerCase().matches(".*\\.(cbz|zip)") && isAdded() && m_activity != null) {
 	    					try {
-								CbzComicArchive cba = new CbzComicArchive(archive.getAbsolutePath());
-								
-								if (cba.getCount() > 0) {
-									// Get cover
+	    						int size = m_activity.getSize(filePath);
+	    						
+	    						if (size == -1 || fullRescan) {
+	    						
+									CbzComicArchive cba = new CbzComicArchive(filePath);
 									
-									try {
-										InputStream is = cba.getItem(0);
-									
-										File thumbnailDir = new File(storage.getAbsolutePath() + "/" + m_activity.THUMBNAIL_PATH);
-									
-										if (!thumbnailDir.isDirectory()) { thumbnailDir.mkdirs(); };
+									if (cba.getCount() > 0) {
+										// Get cover
 										
-										File thumbnailFile = new File(CommonActivity.getCacheFileName(archive.getAbsolutePath()));
+										try {
+											InputStream is = cba.getItem(0);
 										
-										if (thumbnailDir.isDirectory() && !thumbnailFile.exists()) {
-											FileOutputStream fos = new FileOutputStream(thumbnailFile.getAbsolutePath());							
+											File thumbnailDir = new File(storage.getAbsolutePath() + "/" + m_activity.THUMBNAIL_PATH);
+										
+											if (!thumbnailDir.isDirectory()) { thumbnailDir.mkdirs(); };
 											
-											byte[] buffer = new byte[1024];
-											int len = 0;
-											while ((len = is.read(buffer)) != -1) {
-											    fos.write(buffer, 0, len);
+											File thumbnailFile = new File(CommonActivity.getCacheFileName(filePath));
+											
+											if (thumbnailDir.isDirectory() && !thumbnailFile.exists()) {
+												FileOutputStream fos = new FileOutputStream(thumbnailFile.getAbsolutePath());							
+												
+												byte[] buffer = new byte[1024];
+												int len = 0;
+												while ((len = is.read(buffer)) != -1) {
+												    fos.write(buffer, 0, len);
+												}
+												
+												fos.close();
+												is.close();
 											}
-											
-											fos.close();
-											is.close();
+										} catch (IOException e) {
+											e.printStackTrace();
 										}
-									} catch (IOException e) {
-										e.printStackTrace();
+										
+										size = cba.getCount();
+										
+										m_activity.setSize(filePath, size);
 									}
+	    						}
 									
-									int lastPos = m_activity.getLastPosition(archive.getAbsolutePath()); 
-									
-									switch (m_mode) {
-									case 0:
-										m_files.add(archive.getAbsolutePath());
-										break;
-									case 1:
-										if (lastPos == 0) {
-											m_files.add(archive.getAbsolutePath());
-										}
-										break;
-									case 2:
-										if (lastPos > 0 && lastPos != cba.getCount()-1) {
-											m_files.add(archive.getAbsolutePath());
-										}
-										break;
-									case 3:
-										if (lastPos == cba.getCount()-1) {
-											m_files.add(archive.getAbsolutePath());
-										}
-										break;								
+								int lastPos = m_activity.getLastPosition(filePath); 
+								
+								switch (m_mode) {
+								case 0:
+									m_files.add(filePath);
+									break;
+								case 1:
+									if (lastPos == 0) {
+										m_files.add(filePath);
 									}
-									
-									m_activity.setSize(archive.getAbsolutePath(), cba.getCount());
+									break;
+								case 2:
+									if (lastPos > 0 && lastPos != size - 1) {
+										m_files.add(filePath);
+									}
+									break;
+								case 3:
+									if (lastPos == size - 1) {
+										m_files.add(filePath);
+									}
+									break;								
 								}
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -335,7 +346,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
     	super.onResume();
    	
     	if (m_files.size() == 0) {
-    		rescan();
+    		rescan(false);
     	} else {
     		m_adapter.notifyDataSetChanged();
     	}

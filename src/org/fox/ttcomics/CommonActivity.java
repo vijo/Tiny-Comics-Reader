@@ -107,7 +107,7 @@ public class CommonActivity extends FragmentActivity {
 			ComicListFragment frag = (ComicListFragment) getSupportFragmentManager().findFragmentByTag(FRAG_COMICS_LIST);
 			
 			if (frag != null && frag.isAdded()) {
-				frag.rescan();
+				frag.rescan(true);
 			}
 			
 			return true;
