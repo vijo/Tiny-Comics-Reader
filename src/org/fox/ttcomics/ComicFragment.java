@@ -14,20 +14,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ComicFragment extends Fragment {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private SharedPreferences m_prefs;
 	private Bitmap m_comic;
+	private int m_page;
 	
 	public ComicFragment() {
 		super();
 	}
 	
-	public ComicFragment(InputStream is) {
+	public ComicFragment(InputStream is, int page) {
 		super();
 		m_comic = BitmapFactory.decodeStream(is);
+		m_page = page;
 	}
 	
 	@Override
@@ -39,6 +42,7 @@ public class ComicFragment extends Fragment {
 		
 		if (savedInstanceState != null) {
 			m_comic = savedInstanceState.getParcelable("comic");
+			m_page = savedInstanceState.getInt("page");
 		}
 		
 		if (m_comic != null) {
@@ -49,9 +53,17 @@ public class ComicFragment extends Fragment {
 				public void onScaleChanged(float scale) {
 					ViewPager pager = (ViewPager) getActivity().findViewById(R.id.comics_pager);
 					
-					pager.setPagingEnabled(scale - 1.0f < 0.01);
+					if (pager != null) {
+						pager.setPagingEnabled(scale - 1.0f < 0.01);
+					}
 				}
 			});
+		}
+		
+		TextView page = (TextView) view.findViewById(R.id.comic_page);
+		
+		if (page != null) {
+			page.setText(String.valueOf(m_page));
 		}
 		
 		return view;
@@ -70,6 +82,7 @@ public class ComicFragment extends Fragment {
 		super.onSaveInstanceState(out);
 
 		out.putParcelable("comic", m_comic);
+		out.putInt("page", m_page);
 	}
 	
 }

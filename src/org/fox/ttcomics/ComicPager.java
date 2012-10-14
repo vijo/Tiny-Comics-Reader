@@ -18,7 +18,7 @@ public class ComicPager extends Fragment {
 	private String m_fileName;
 	private SharedPreferences m_prefs;
 	private final String TAG = this.getClass().getSimpleName();
-	private CbzComicArchive m_archive;
+	private ComicArchive m_archive;
 	private CommonActivity m_activity;
 	
 	private class PagerAdapter extends FragmentStatePagerAdapter {
@@ -29,7 +29,7 @@ public class ComicPager extends Fragment {
 		@Override
 		public Fragment getItem(int position) {
 			try {
-				return new ComicFragment(m_archive.getItem(position));
+				return new ComicFragment(m_archive.getItem(position), position+1);
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -50,6 +50,10 @@ public class ComicPager extends Fragment {
 	
 	public ComicPager() {
 		super();
+	}
+	
+	public ComicArchive getArchive() {
+		return m_archive;
 	}
 	
 	public int getCount() {
@@ -105,7 +109,8 @@ public class ComicPager extends Fragment {
 			
 			pager.setAdapter(m_adapter);
 			pager.setCurrentItem(position);
-			m_activity.setProgress(Math.round(((float)position / (float)m_archive.getCount()) * 10000));
+			
+			m_activity.onComicSelected(m_fileName, position);
 			
 		} catch (IOException e) {
 			

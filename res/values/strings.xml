@@ -26,4 +26,6 @@
     <string name="dialog_location_location">Location…</string>
     <string name="dialog_location_end">End</string>
     <string name="tab_unfinished">Unfinished</string>
+    <string name="menu_share">Share</string>
+    <string name="prefs_use_full_screen">Fullscreen mode</string>
 </resources>

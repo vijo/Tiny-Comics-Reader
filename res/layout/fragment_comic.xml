@@ -3,11 +3,19 @@
     android:id="@+id/FrameLayout3"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-
+
     <org.fox.ttcomics.TouchImageView
         android:id="@+id/comic_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-  
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/comic_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="4dp"
+        android:alpha="0.25"
+        android:text="25" />
+
 </FrameLayout>

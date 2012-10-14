@@ -1,10 +1,15 @@
 package org.fox.ttcomics;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -13,12 +18,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.NumberPicker;
 
 public class ViewComicActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private String m_fileName;
+	private Menu m_menu;
 	
     @SuppressLint("NewApi")
 	@Override
@@ -43,11 +50,20 @@ public class ViewComicActivity extends CommonActivity {
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(new File(m_fileName).getName());
+        
+        if (m_prefs.getBoolean("use_full_screen", false)) {
+        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+        		WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_view_comic, menu);
+        
+        m_menu = menu;
+		
+		//updateMenu();
         return true;
     }
     
@@ -58,10 +74,55 @@ public class ViewComicActivity extends CommonActivity {
 		out.putString("fileName", m_fileName);
 	}
 	
+	@Override
+	public void onComicSelected(String fileName, int position) {
+		super.onComicSelected(fileName, position);
+		
+    	//updateMenu();
+	}
+	
+	private void shareComic() {
+		
+		ComicPager pager = (ComicPager) getSupportFragmentManager().findFragmentByTag(FRAG_COMICS_PAGER);
+		
+		if (pager != null) {
+			
+			try {
+				File tmpFile = File.createTempFile("ttshare", ".png");
+				
+				InputStream is = pager.getArchive().getItem(pager.getPosition());
+				FileOutputStream fos = new FileOutputStream(tmpFile);
+				
+				byte[] buffer = new byte[1024];
+				int len = 0;
+				while ((len = is.read(buffer)) != -1) {
+				    fos.write(buffer, 0, len);
+				}
+				
+				fos.close();
+				is.close();
+
+				Intent shareIntent = new Intent(Intent.ACTION_SEND);
+				
+				shareIntent.setType("image/jpeg");
+				shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tmpFile));
+
+				startActivity(Intent.createChooser(shareIntent, "Share comic"));
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.menu_go_location:
-			
+		case R.id.menu_share:
+			shareComic();			
+			return true;			
+		case R.id.menu_go_location:			
 			Dialog dialog = new Dialog(ViewComicActivity.this);
 			AlertDialog.Builder builder = new AlertDialog.Builder(ViewComicActivity.this)
 					.setTitle("Go to...")
@@ -131,9 +192,6 @@ public class ViewComicActivity extends CommonActivity {
 
 			dialog = builder.create();
 			dialog.show();
-
-			
-			// TODO display dialog: Beginning, Page..., Last unread			
 			
 			return true;
 		case android.R.id.home:

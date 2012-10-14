@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ShareActionProvider;
 
 public class MainActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();

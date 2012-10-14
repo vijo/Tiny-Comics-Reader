@@ -4,6 +4,7 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,14 +14,13 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
+import android.widget.ShareActionProvider;
 
 public class CommonActivity extends FragmentActivity {
 	private final String TAG = this.getClass().getSimpleName();
 
 	protected static final String FRAG_COMICS_PAGER = "comic_pager";
 	protected static final String FRAG_COMICS_LIST = "comics_list";
-	
-	public static final String THUMBNAIL_PATH = "/data/org.fox.ttcomics/thumbnails/";
 
 	protected SharedPreferences m_prefs;
 
@@ -152,12 +152,10 @@ public class CommonActivity extends FragmentActivity {
 		return null;
 	}
 
-	public static String getCacheFileName(String fileName) {
-		String hashedUrl = md5(fileName);
+	public String getCacheFileName(String fileName) {
+		String hash = md5(fileName);
 		
-		File storage = Environment.getExternalStorageDirectory();
-		
-		File file = new File(storage.getAbsolutePath() + THUMBNAIL_PATH + "/" + hashedUrl + ".png");
+		File file = new File(getExternalCacheDir().getAbsolutePath() + "/" + hash + ".png");
 		
 		return file.getAbsolutePath();
 	}

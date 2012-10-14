@@ -110,8 +110,8 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				}
 			}
 			
-			File thumbnailFile = new File(CommonActivity.getCacheFileName(file.getAbsolutePath()));
-
+			File thumbnailFile = new File(m_activity.getCacheFileName(file.getAbsolutePath()));
+			
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
 			if (thumbnail != null) {
@@ -261,14 +261,10 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 										try {
 											InputStream is = cba.getItem(0);
 										
-											File thumbnailDir = new File(storage.getAbsolutePath() + "/" + m_activity.THUMBNAIL_PATH);
-										
-											if (!thumbnailDir.isDirectory()) { thumbnailDir.mkdirs(); };
-											
-											File thumbnailFile = new File(CommonActivity.getCacheFileName(filePath));
-											
-											if (thumbnailDir.isDirectory() && !thumbnailFile.exists()) {
-												FileOutputStream fos = new FileOutputStream(thumbnailFile.getAbsolutePath());							
+											File thumbnailFile = new File(m_activity.getCacheFileName(filePath));
+
+											if (!thumbnailFile.exists() || fullRescan) {
+												FileOutputStream fos = new FileOutputStream(thumbnailFile);							
 												
 												byte[] buffer = new byte[1024];
 												int len = 0;
