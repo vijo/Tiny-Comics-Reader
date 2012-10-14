@@ -25,7 +25,6 @@ public class ViewComicActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
 
 	private String m_fileName;
-	private Menu m_menu;
 	
     @SuppressLint("NewApi")
 	@Override
@@ -60,10 +59,6 @@ public class ViewComicActivity extends CommonActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_view_comic, menu);
-        
-        m_menu = menu;
-		
-		//updateMenu();
         return true;
     }
     
@@ -77,8 +72,6 @@ public class ViewComicActivity extends CommonActivity {
 	@Override
 	public void onComicSelected(String fileName, int position) {
 		super.onComicSelected(fileName, position);
-		
-    	//updateMenu();
 	}
 	
 	private void shareComic() {
@@ -110,6 +103,7 @@ public class ViewComicActivity extends CommonActivity {
 				startActivity(Intent.createChooser(shareIntent, "Share comic"));
 
 			} catch (IOException e) {
+				toast(getString(R.string.error_could_not_prepare_file_for_sharing));
 				e.printStackTrace();
 			}
 

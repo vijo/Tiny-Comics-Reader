@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
 import android.widget.ShareActionProvider;
+import android.widget.Toast;
 
 public class CommonActivity extends FragmentActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -159,4 +160,15 @@ public class CommonActivity extends FragmentActivity {
 		
 		return file.getAbsolutePath();
 	}
+	
+	public void toast(int msgId) {
+		Toast toast = Toast.makeText(CommonActivity.this, msgId, Toast.LENGTH_SHORT);
+		toast.show();
+	}
+
+	public void toast(String msg) {
+		Toast toast = Toast.makeText(CommonActivity.this, msg, Toast.LENGTH_SHORT);
+		toast.show();
+	}
+
 }

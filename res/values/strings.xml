@@ -28,4 +28,6 @@
     <string name="tab_unfinished">Unfinished</string>
     <string name="menu_share">Share</string>
     <string name="prefs_use_full_screen">Fullscreen mode</string>
+    <string name="error_could_not_prepare_file_for_sharing">Could not prepare file for sharing</string>
+    <string name="error_could_not_open_comic_archive">Could not open comic archive.</string>
 </resources>

@@ -113,9 +113,7 @@ public class ComicPager extends Fragment {
 			m_activity.onComicSelected(m_fileName, position);
 			
 		} catch (IOException e) {
-			
-			// TODO Can't open comic, display error...
-			
+			m_activity.toast(R.string.error_could_not_open_comic_archive);
 			e.printStackTrace();
 		}
 		
