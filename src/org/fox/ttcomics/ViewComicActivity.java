@@ -23,8 +23,11 @@ import android.widget.NumberPicker;
 
 public class ViewComicActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
+	
+	private final static int REQUEST_SHARE = 1;
 
 	private String m_fileName;
+	private String m_tmpFileName;
 	
     @SuppressLint("NewApi")
 	@Override
@@ -45,6 +48,7 @@ public class ViewComicActivity extends CommonActivity {
        		ft.commit();
         } else {
         	m_fileName = savedInstanceState.getString("fileName");
+        	m_tmpFileName = savedInstanceState.getString("tmpFileName");
         }
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -67,6 +71,7 @@ public class ViewComicActivity extends CommonActivity {
 		super.onSaveInstanceState(out);
 
 		out.putString("fileName", m_fileName);
+		out.putString("tmpFileName", m_tmpFileName);
 	}
 	
 	@Override
@@ -81,7 +86,9 @@ public class ViewComicActivity extends CommonActivity {
 		if (pager != null) {
 			
 			try {
-				File tmpFile = File.createTempFile("ttshare", ".png");
+				File tmpFile = File.createTempFile("trcshare", ".jpg", getExternalCacheDir());
+				
+				Log.d(TAG, "FILE=" + tmpFile);
 				
 				InputStream is = pager.getArchive().getItem(pager.getPosition());
 				FileOutputStream fos = new FileOutputStream(tmpFile);
@@ -100,15 +107,29 @@ public class ViewComicActivity extends CommonActivity {
 				shareIntent.setType("image/jpeg");
 				shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tmpFile));
 
-				startActivity(Intent.createChooser(shareIntent, "Share comic"));
-
+				m_tmpFileName = tmpFile.getAbsolutePath();
+				
+				startActivityForResult(Intent.createChooser(shareIntent, "Share comic"), REQUEST_SHARE);
+								
 			} catch (IOException e) {
 				toast(getString(R.string.error_could_not_prepare_file_for_sharing));
 				e.printStackTrace();
 			}
 
 		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	    if (requestCode == REQUEST_SHARE) {
+	    	File tmpFile = new File(m_tmpFileName);
+	    	
+	    	if (tmpFile.exists()) {
+	    		tmpFile.delete();
+	    	}
 
+	    }
+	    super.onActivityResult(requestCode, resultCode, intent);
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
