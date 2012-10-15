@@ -9,6 +9,7 @@
 
     <ImageView
         android:id="@+id/thumbnail"
+        android:padding="4dp"
         android:layout_weight="0"
         android:layout_width="48dp"
         android:layout_height="48dp"

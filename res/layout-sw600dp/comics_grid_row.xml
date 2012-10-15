@@ -12,6 +12,7 @@
         android:id="@+id/thumbnail"
         android:layout_width="160dp"
         android:layout_height="160dp"
+        android:padding="8dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0"
         android:background="@drawable/border"
@@ -32,6 +33,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Comic_1980.cbz" />
+
+        <ProgressBar
+            android:id="@+id/file_progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/file_progress_info"
@@ -41,13 +49,6 @@
             android:gravity="right"
             android:text="12 of 325"
             android:textSize="12dp" />
-
-        <ProgressBar
-            android:id="@+id/file_progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="128dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
 
     </LinearLayout>
 
