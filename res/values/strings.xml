@@ -32,4 +32,6 @@
     <string name="error_could_not_open_comic_archive">Could not open comic archive.</string>
     <string name="error_out_of_memory">Out of memory</string>
     <string name="error_loading_image">Error loading image</string>
+    <string name="error_could_not_read_folder_contents_">Could not read folder contents.</string>
+    <string name="picker_choose">Choose %1$s</string>
 </resources>

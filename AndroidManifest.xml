@@ -38,6 +38,11 @@
             android:name=".CommonActivity"
             android:label="@string/title_activity_main">
         </activity>
+
+        <activity
+            android:name=".DirectoryPicker"
+            android:label="@string/title_activity_main">
+        </activity>
         
     </application>
 

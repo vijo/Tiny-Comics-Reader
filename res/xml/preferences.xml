@@ -2,11 +2,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <PreferenceCategory android:title="@string/prefs_general" >
-        <EditTextPreference
+        <Preference
             android:key="comics_directory"
             android:hint="@string/comics_directory_default"
             android:title="@string/prefs_comics_directory" >
-        </EditTextPreference>
+        </Preference>
     </PreferenceCategory>
         	
     <PreferenceCategory android:title="@string/prefs_reading" android:key="prefs_reading">
