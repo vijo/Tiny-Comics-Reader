@@ -8,6 +8,10 @@
         android:title="@string/menu_go_location"
         android:showAsAction="never" />
 
+    <item android:id="@+id/menu_sync_location"
+        android:title="@string/menu_sync_location"
+        android:showAsAction="never" />
+    
     <item android:id="@+id/menu_share"
         android:title="@string/menu_share"
         android:icon="@android:drawable/ic_menu_share"

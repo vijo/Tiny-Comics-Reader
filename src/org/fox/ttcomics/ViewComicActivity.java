@@ -28,8 +28,6 @@ import android.widget.TextView;
 
 public class ViewComicActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
-	
-	private final static int REQUEST_SHARE = 1;
 
 	private String m_fileName;
 	private String m_tmpFileName;
@@ -66,11 +64,15 @@ public class ViewComicActivity extends CommonActivity {
         	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         		WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+        
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_view_comic, menu);
+        
+        menu.findItem(R.id.menu_sync_location).setVisible(m_prefs.getBoolean("use_position_sync", false) && m_syncClient.hasOwner());
+        
         return true;
     }
     
@@ -118,7 +120,7 @@ public class ViewComicActivity extends CommonActivity {
 
 				m_tmpFileName = tmpFile.getAbsolutePath();
 				
-				startActivityForResult(Intent.createChooser(shareIntent, "Share comic"), REQUEST_SHARE);
+				startActivityForResult(Intent.createChooser(shareIntent, getString(R.string.share_comic)), REQUEST_SHARE);
 								
 			} catch (IOException e) {
 				toast(getString(R.string.error_could_not_prepare_file_for_sharing));
@@ -146,6 +148,38 @@ public class ViewComicActivity extends CommonActivity {
 		case R.id.menu_share:
 			shareComic();			
 			return true;			
+		case R.id.menu_sync_location:
+	        m_syncClient.getPosition(sha1(new File(m_fileName).getName()), new SyncClient.PositionReceivedListener() {
+				@Override
+				public void onPositionReceived(final int position) {
+					final ComicPager pager = (ComicPager) getSupportFragmentManager().findFragmentByTag(FRAG_COMICS_PAGER);
+					
+					if (pager != null && pager.isAdded()) {
+						int localPosition = pager.getPosition();
+
+						if (position > localPosition) {
+							AlertDialog.Builder builder = new AlertDialog.Builder(ViewComicActivity.this);
+							builder.setMessage(getString(R.string.sync_server_has_further_page, localPosition+1, position+1))
+							       .setCancelable(false)
+							       .setPositiveButton(R.string.dialog_open_page, new DialogInterface.OnClickListener() {
+							           public void onClick(DialogInterface dialog, int id) {
+							        	   pager.setCurrentItem(position);
+							           }
+							       })
+							       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+							           public void onClick(DialogInterface dialog, int id) {
+							                dialog.cancel();			                
+							           }
+							       });
+							AlertDialog alert = builder.create();
+							alert.show();
+
+						}
+						
+					}				
+				}
+			});
+	        return true;			
 		case R.id.menu_go_location:			
 			Dialog dialog = new Dialog(ViewComicActivity.this);
 			AlertDialog.Builder builder = new AlertDialog.Builder(ViewComicActivity.this)

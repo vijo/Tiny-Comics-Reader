@@ -5,6 +5,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,7 +27,11 @@ public class CommonActivity extends FragmentActivity {
 	protected static final String FRAG_COMICS_PAGER = "comic_pager";
 	protected static final String FRAG_COMICS_LIST = "comics_list";
 
+	protected final static int REQUEST_SHARE = 1;
+	protected static final int REQUEST_VIEWCOMIC = 2;
+
 	protected SharedPreferences m_prefs;
+	protected SyncClient m_syncClient = new SyncClient();
 
 	private boolean m_smallScreenMode = true;
 
@@ -34,7 +40,15 @@ public class CommonActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         
     	m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        
+     
+    	String googleAccount = getGoogleAccount();
+    	
+    	if (googleAccount != null) {
+    		m_syncClient.setOwner(googleAccount);    			
+    	} else {
+    		//toast("No Google account found, sync disabled.");    		
+    		m_syncClient.setOwner("TEST-ACCOUNT");
+    	}
 	}
 	
 	public static boolean isCompatMode() {
@@ -159,12 +173,43 @@ public class CommonActivity extends FragmentActivity {
 		return null;
 	}
 
+	protected static String sha1(String s) {
+		try {
+			MessageDigest digest = java.security.MessageDigest.getInstance("SHA1");
+	        digest.update(s.getBytes());
+	        byte messageDigest[] = digest.digest();
+	        
+	        StringBuffer hexString = new StringBuffer();
+	        for (int i=0; i<messageDigest.length; i++)
+	            hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
+	        
+	        return hexString.toString();
+	        
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
 	public String getCacheFileName(String fileName) {
 		String hash = md5(fileName);
 		
 		File file = new File(getExternalCacheDir().getAbsolutePath() + "/" + hash + ".png");
 		
 		return file.getAbsolutePath();
+	}
+	
+	public String getGoogleAccount() {
+		AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+		Account[] list = manager.getAccounts();
+
+		for (Account account: list) {
+		    if (account.type.equalsIgnoreCase("com.google")) {
+		        return account.name;
+		    }
+		}
+		return null;
 	}
 	
 	public void toast(int msgId) {

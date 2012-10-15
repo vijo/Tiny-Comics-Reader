@@ -24,6 +24,7 @@ public class MainActivity extends CommonActivity {
 	private TabListener m_tabListener;
 	private int m_selectedTab;
 	private String m_baseDirectory = "";
+	private String m_fileName = "";
 	
 	@SuppressLint("NewApi")
 	private class TabListener implements ActionBar.TabListener {
@@ -88,6 +89,7 @@ public class MainActivity extends CommonActivity {
     	} else {
         	m_selectedTab = -1;
         	m_baseDirectory = savedInstanceState.getString("baseDir");
+        	m_fileName = savedInstanceState.getString("fileName");
     	}
     	
     	if (!isCompatMode()) {
@@ -163,6 +165,7 @@ public class MainActivity extends CommonActivity {
 
 		out.putInt("selectedTab", m_selectedTab);
 		out.putString("baseDir", m_baseDirectory);
+		out.putString("fileName", m_fileName);
 	}
     
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -201,10 +204,24 @@ public class MainActivity extends CommonActivity {
 					ViewComicActivity.class);
 
 			intent.putExtra("fileName", fileName);
-
-			startActivityForResult(intent, 0); 
+			m_fileName = fileName;
+			
+			startActivityForResult(intent, REQUEST_VIEWCOMIC); 
 		}
 	}
 
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+	    if (requestCode == REQUEST_VIEWCOMIC) {
+	    	//Log.d(TAG, "finished viewing comic: " + m_fileName);
+	    	
+	    	if (m_prefs.getBoolean("use_position_sync", false)) {
+	    		toast("Uploading sync data...");
+	    		m_syncClient.setPosition(sha1(new File(m_fileName).getName()), getLastPosition(m_fileName));
+	    	}
+	    }
+	    super.onActivityResult(requestCode, resultCode, intent);
+	}
 	
 }

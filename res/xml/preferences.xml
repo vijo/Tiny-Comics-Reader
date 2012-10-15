@@ -7,6 +7,14 @@
             android:hint="@string/comics_directory_default"
             android:title="@string/prefs_comics_directory" >
         </Preference>
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="use_position_sync"
+            android:title="@string/prefs_use_position_sync" 
+            android:summary="@string/prefs_use_position_sync_summary" 
+            />
+        
     </PreferenceCategory>
         	
     <PreferenceCategory android:title="@string/prefs_reading" android:key="prefs_reading">

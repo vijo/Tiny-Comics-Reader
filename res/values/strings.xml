@@ -35,4 +35,12 @@
     <string name="error_could_not_read_folder_contents_">Could not read folder contents.</string>
     <string name="picker_choose">Choose %1$s</string>
     <string name="dialog_location_page_number">%1$d of %2$d</string>
+    <string name="sync_server_has_further_page">You are currently on page %1$d. Furthest read page stored on the server is %2$d. Open it instead?</string>
+    <string name="dialog_open_page">Open page</string>
+    <string name="menu_sync_location">Sync to last page read</string>
+    <string name="share_comic">Share comic</string>
+    <string name="choose">Choose</string>
+    <string name="error_no_comic_arhives_found_">No comic arhives found.</string>
+    <string name="prefs_use_position_sync">Sync last read page</string>
+    <string name="prefs_use_position_sync_summary">Requires at least one Google account on the device. No personally identifiable information is sent.</string>
 </resources>
