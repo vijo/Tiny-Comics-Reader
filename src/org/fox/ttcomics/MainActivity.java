@@ -57,7 +57,8 @@ public class MainActivity extends CommonActivity {
 		
 	}
 	
-    @Override
+    @SuppressLint("NewApi")
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
@@ -216,8 +217,8 @@ public class MainActivity extends CommonActivity {
 	    if (requestCode == REQUEST_VIEWCOMIC) {
 	    	//Log.d(TAG, "finished viewing comic: " + m_fileName);
 	    	
-	    	if (m_prefs.getBoolean("use_position_sync", false)) {
-	    		toast("Uploading sync data...");
+	    	if (m_prefs.getBoolean("use_position_sync", false) && m_syncClient.hasOwner()) {
+	    		toast(R.string.sync_uploading);
 	    		m_syncClient.setPosition(sha1(new File(m_fileName).getName()), getLastPosition(m_fileName));
 	    	}
 	    }

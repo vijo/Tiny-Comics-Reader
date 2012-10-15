@@ -43,4 +43,6 @@
     <string name="error_no_comic_arhives_found_">No comic arhives found.</string>
     <string name="prefs_use_position_sync">Sync last read page</string>
     <string name="prefs_use_position_sync_summary">Requires at least one Google account on the device. No personally identifiable information is sent.</string>
+    <string name="error_sync_no_account">No Google account found, sync disabled.</string>
+    <string name="sync_uploading">Uploading sync data...</string>
 </resources>

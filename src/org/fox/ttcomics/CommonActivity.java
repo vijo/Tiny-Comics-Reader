@@ -40,14 +40,21 @@ public class CommonActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         
     	m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-     
-    	String googleAccount = getGoogleAccount();
-    	
-    	if (googleAccount != null) {
-    		m_syncClient.setOwner(googleAccount);    			
-    	} else {
-    		//toast("No Google account found, sync disabled.");    		
-    		m_syncClient.setOwner("TEST-ACCOUNT");
+     	
+    	if (m_prefs.getBoolean("use_position_sync", false)) {
+        	String googleAccount = getGoogleAccount();
+        
+	    	if (googleAccount != null) {
+	    		m_syncClient.setOwner(googleAccount);    			
+	    	} else {
+	    		toast(R.string.error_sync_no_account);
+	    		
+	    		SharedPreferences.Editor editor = m_prefs.edit();
+	    		editor.putBoolean("use_position_sync", false);
+	    		editor.commit();
+	    		
+	    		//m_syncClient.setOwner("TEST-ACCOUNT");
+	    	}
     	}
 	}
 	
