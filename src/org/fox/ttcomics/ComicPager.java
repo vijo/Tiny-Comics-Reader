@@ -28,7 +28,7 @@ public class ComicPager extends Fragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			return new ComicFragment(position+1);
+			return new ComicFragment(position);
 		}
 
 		@Override
@@ -102,6 +102,7 @@ public class ComicPager extends Fragment {
 			pager.setCurrentItem(position);
 			
 			m_activity.onComicSelected(m_fileName, position);
+			m_activity.setProgress(Math.round(((float)position / (float)(m_archive.getCount()-1)) * 10000));
 			
 		} catch (IOException e) {
 			m_activity.toast(R.string.error_could_not_open_comic_archive);
@@ -113,7 +114,7 @@ public class ComicPager extends Fragment {
 			public void onPageSelected(int position) {
 				m_activity.onComicSelected(m_fileName, position);
 
-				m_activity.setProgress(Math.round(((float)position / (float)m_archive.getCount()) * 10000));
+				m_activity.setProgress(Math.round(((float)position / (float)(m_archive.getCount()-1)) * 10000));
 								
 				if (!CommonActivity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
 					view.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);

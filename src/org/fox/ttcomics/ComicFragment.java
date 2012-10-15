@@ -40,11 +40,7 @@ public class ComicFragment extends Fragment {
 		    options.inJustDecodeBounds = true;
 		    BitmapFactory.decodeStream(archive.getItem(page), null, options);
 
-		    if (CommonActivity.isCompatMode()) {
-		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 256, 256);
-		    } else {
-		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
-		    }
+	    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
 		    options.inJustDecodeBounds = false;
 		    
 			return BitmapFactory.decodeStream(archive.getItem(page), null, options);
@@ -98,7 +94,7 @@ public class ComicFragment extends Fragment {
 		TextView page = (TextView) view.findViewById(R.id.comic_page);
 		
 		if (page != null) {
-			page.setText(String.valueOf(m_page));
+			page.setText(String.valueOf(m_page+1));
 		}
 		
 		return view;

@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.NumberPicker;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class ViewComicActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -96,7 +98,7 @@ public class ViewComicActivity extends CommonActivity {
 				
 				Log.d(TAG, "FILE=" + tmpFile);
 				
-				InputStream is = pager.getArchive().getItem(pager.getPosition()+1);
+				InputStream is = pager.getArchive().getItem(pager.getPosition());
 				
 				FileOutputStream fos = new FileOutputStream(tmpFile);
 				
@@ -200,6 +202,69 @@ public class ViewComicActivity extends CommonActivity {
 											
 											seekDialog = seekBuilder.create();
 											seekDialog.show();
+										} else {
+											LayoutInflater inflater = getLayoutInflater();											
+											final View contentView = inflater.inflate(R.layout.dialog_location_compat, null);
+											
+											final SeekBar seeker = (SeekBar) contentView.findViewById(R.id.number_seeker);
+											final TextView pageNum = (TextView) contentView.findViewById(R.id.page_number);
+											final int size = getSize(m_fileName); 
+													
+											seeker.setMax(size-1);
+											seeker.setProgress(cp.getPosition());
+	
+											pageNum.setText(getString(R.string.dialog_location_page_number, cp.getPosition()+1, size));
+											
+											seeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+
+												@Override
+												public void onProgressChanged(
+														SeekBar seekBar, int progress,
+														boolean fromUser) {
+													
+													pageNum.setText(getString(R.string.dialog_location_page_number, progress+1, size));
+													
+												}
+
+												@Override
+												public void onStartTrackingTouch(
+														SeekBar arg0) {
+													// TODO Auto-generated method stub
+													
+												}
+
+												@Override
+												public void onStopTrackingTouch(
+														SeekBar arg0) {
+													// TODO Auto-generated method stub
+													
+												}
+												
+												
+											});
+											
+											Dialog seekDialog = new Dialog(ViewComicActivity.this);
+											AlertDialog.Builder seekBuilder = new AlertDialog.Builder(ViewComicActivity.this)
+												.setTitle(R.string.dialog_open_location)
+												.setView(contentView)
+												.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+													
+													public void onClick(DialogInterface dialog, int which) {
+														dialog.cancel();													
+													}
+												}).setPositiveButton(R.string.dialog_open_location, new DialogInterface.OnClickListener() {
+													
+													public void onClick(DialogInterface dialog, int which) {
+														dialog.cancel();
+														
+														cp.setCurrentItem(seeker.getProgress());
+														
+													}
+												});
+											
+											seekDialog = seekBuilder.create();
+											seekDialog.show();
+											
 										}
 										
 										break;

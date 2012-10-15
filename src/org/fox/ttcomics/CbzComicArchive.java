@@ -22,7 +22,7 @@ public class CbzComicArchive extends ComicArchive {
 	}
 	
 	@Override
-	public InputStream getItem(int index) throws IOException {		
+	public InputStream getItem(int index) throws IOException {
 		return m_zipFile.getInputStream(m_entries.get(index));
 	}
 	

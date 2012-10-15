@@ -103,7 +103,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			
 			if (progressBar != null) {
 				if (size != -1) {
-					progressBar.setMax(size);
+					progressBar.setMax(size-1);
 					progressBar.setProgress(lastPos);
 				} else {
 					progressBar.setVisibility(View.GONE);
@@ -241,8 +241,6 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		    	File dir = new File(comicsDir);
 		    		
 	    		m_files.clear();
-	    		
-	    		File storage = Environment.getExternalStorageDirectory();
 	    		
 	    		if (dir.isDirectory()) {
 	    			File archives[] = dir.listFiles();
