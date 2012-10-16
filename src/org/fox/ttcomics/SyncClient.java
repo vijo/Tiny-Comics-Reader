@@ -20,8 +20,18 @@ public class SyncClient {
 		@Override
 		protected Boolean doInBackground(String... params) {
 						
-			String requestStr = "set".equals(params[0]) ? String.format("op=set&owner=%1$s&hash=%2$s&position=%3$s", m_owner, params[1], params[2]) :
-				String.format("op=get&owner=%1$s&hash=%2$s", m_owner, params[1]);
+			String requestStr = null;
+			String op = params[0];
+			
+			if (op.equals("set")) {
+				requestStr = String.format("op=set&owner=%1$s&hash=%2$s&position=%3$s", m_owner, params[1], params[2]);
+			} else if (op.equals("get")) {			 
+				requestStr = String.format("op=get&owner=%1$s&hash=%2$s", m_owner, params[1]);
+			} else if (op.equals("clear")) {
+				requestStr = String.format("op=clear&owner=%1$s", m_owner);
+			}
+			
+			if (requestStr == null) return false;
 			
 			try {
 				byte[] postData = requestStr.getBytes("UTF-8");
@@ -113,6 +123,16 @@ public class SyncClient {
 			HttpTask task = new HttpTask();
 			
 			task.execute("set", hash, String.valueOf(position));
+		}
+	}
+	
+	public void clearData() {
+		if (m_owner != null) {
+			Log.d(TAG, "Clearing sync data...");
+			
+			HttpTask task = new HttpTask();
+			
+			task.execute("clear");
 		}
 	}
 

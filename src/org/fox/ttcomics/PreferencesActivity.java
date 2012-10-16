@@ -1,13 +1,19 @@
 package org.fox.ttcomics;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 public class PreferencesActivity extends PreferenceActivity {
 
@@ -26,7 +32,7 @@ public class PreferencesActivity extends PreferenceActivity {
 			readingCat.removePreference(dimPref);			
 		}
 		
-		Preference dirPref = (Preference) findPreference("comics_directory");
+		Preference dirPref = findPreference("comics_directory");
 		dirPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
@@ -39,6 +45,53 @@ public class PreferencesActivity extends PreferenceActivity {
 				return true;
              }
          });
+		
+		Preference clearPref = findPreference("clear_sync_data");
+		clearPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(PreferencesActivity.this);
+				builder.setMessage(R.string.dialog_clear_data_title)
+				       .setCancelable(false)
+				       .setPositiveButton(R.string.dialog_clear_data, new DialogInterface.OnClickListener() {
+				           public void onClick(DialogInterface dialog, int id) {
+				        	   
+				        	 String googleAccount = getGoogleAccount();
+				        	 SyncClient m_syncClient = new SyncClient();
+				           	
+				        	 if (googleAccount != null) {
+				        		 m_syncClient.setOwner(googleAccount);    			
+				        	 } else {
+				        		 if (Build.FINGERPRINT.startsWith("generic")) {		    		
+				        			 m_syncClient.setOwner("TEST-ACCOUNT");	    			
+				        		 } else {				        		
+				        			 m_syncClient.setOwner(null);
+
+				        			 SharedPreferences.Editor editor = prefs.edit();
+				        			 editor.putBoolean("use_position_sync", false);
+				        			 editor.commit();
+				 	    			
+				        			 Toast toast = Toast.makeText(PreferencesActivity.this, R.string.error_sync_no_account, Toast.LENGTH_SHORT);
+				        			 toast.show();
+				        		 }
+				        	 }
+				        	 
+				        	 if (m_syncClient.hasOwner()) {
+				        		 m_syncClient.clearData();
+				        	 }
+				           }
+				       })
+				       .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				           public void onClick(DialogInterface dialog, int id) {
+				                dialog.cancel();			                
+				           }
+				       });
+				AlertDialog alert = builder.create();
+				alert.show();
+				
+				return false;
+			}
+		});
 	}
 	
 	@Override
@@ -55,5 +108,17 @@ public class PreferencesActivity extends PreferenceActivity {
 	    	editor.commit();
 			
 		}
+	}
+	
+	public String getGoogleAccount() {
+		AccountManager manager = (AccountManager) getSystemService(ACCOUNT_SERVICE);
+		Account[] list = manager.getAccounts();
+
+		for (Account account: list) {
+		    if (account.type.equalsIgnoreCase("com.google")) {
+		        return account.name;
+		    }
+		}
+		return null;
 	}
 }

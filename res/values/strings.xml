@@ -41,9 +41,11 @@
     <string name="share_comic">Share comic</string>
     <string name="choose">Choose</string>
     <string name="error_no_comic_arhives_found_">No comic arhives found.</string>
-    <string name="prefs_use_position_sync">Sync last read page</string>
+    <string name="prefs_use_position_sync">Sync last read pages</string>
     <string name="prefs_use_position_sync_summary">Requires at least one Google account on the device. No personally identifiable information is sent.</string>
     <string name="error_sync_no_account">No Google account found, sync disabled.</string>
-    <string name="sync_uploading">Uploading sync data...</string>
+    <string name="sync_uploading">Uploading sync data…</string>
     <string name="error_sync_no_data">No information stored or you are on the furthest read page.</string>
+    <string name="dialog_clear_data">Clear data</string>
+    <string name="dialog_clear_data_title">Clear all remotely stored sync data?</string>
 </resources>

@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -40,20 +41,28 @@ public class CommonActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         
     	m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-     	
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		
     	if (m_prefs.getBoolean("use_position_sync", false)) {
         	String googleAccount = getGoogleAccount();
         	
 	    	if (googleAccount != null) {
 	    		m_syncClient.setOwner(googleAccount);    			
 	    	} else {
-	    		toast(R.string.error_sync_no_account);
-	    		
-	    		SharedPreferences.Editor editor = m_prefs.edit();
-	    		editor.putBoolean("use_position_sync", false);
-	    		editor.commit(); 
-	    		
-	    		//m_syncClient.setOwner("TEST-ACCOUNT");
+	    		if (Build.FINGERPRINT.startsWith("generic")) {		    		
+		    		m_syncClient.setOwner("TEST-ACCOUNT");	    			
+	    		} else {
+	    			m_syncClient.setOwner(null);
+	    			toast(R.string.error_sync_no_account);
+	    			    		
+	    			SharedPreferences.Editor editor = m_prefs.edit();
+	    			editor.putBoolean("use_position_sync", false);
+	    			editor.commit();
+	    		}
 	    	}
     	}
 	}
