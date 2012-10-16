@@ -2,10 +2,12 @@ package org.fox.ttcomics;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 public class ViewPager extends android.support.v4.view.ViewPager {
 
+	private final String TAG = this.getClass().getSimpleName();
     private boolean enabled;
 
     public ViewPager(Context context, AttributeSet attrs) {
@@ -33,5 +35,9 @@ public class ViewPager extends android.support.v4.view.ViewPager {
  
     public void setPagingEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+    
+    public boolean getPagingEnabled() {
+    	return this.enabled;
     }
 }

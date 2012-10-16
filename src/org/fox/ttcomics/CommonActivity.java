@@ -404,4 +404,22 @@ public class CommonActivity extends FragmentActivity {
 		m_writableDb.close();
 	}
 
+	public void selectPreviousComic() {
+		ComicPager frag = (ComicPager) getSupportFragmentManager().findFragmentByTag(FRAG_COMICS_PAGER);
+		
+		if (frag != null && frag.isAdded() && frag.getPosition() > 0) {
+			frag.setCurrentItem(frag.getPosition() - 1);
+		}		
+	}
+
+	public void selectNextComic() {
+		ComicPager frag = (ComicPager) getSupportFragmentManager().findFragmentByTag(FRAG_COMICS_PAGER);
+		
+		if (frag != null && frag.isAdded() && frag.getPosition() < frag.getCount()-1) {
+			frag.setCurrentItem(frag.getPosition() + 1);
+		}		
+		
+		
+	}
+
 }

@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,6 +23,7 @@ public class ComicFragment extends Fragment {
 	
 	private SharedPreferences m_prefs;
 	private int m_page;
+	private CommonActivity m_activity;
 	
 	public ComicFragment() {
 		super();
@@ -77,10 +79,11 @@ public class ComicFragment extends Fragment {
 				image.setBackgroundColor(0xff000000);
 			}
 			
+			
 			image.setImageBitmap(loadImage(pager.getArchive(), m_page));
 			image.setMaxZoom(4f);
 			image.setOnScaleChangedListener(new TouchImageView.OnScaleChangedListener() {
-				
+				@Override
 				public void onScaleChanged(float scale) {
 					ViewPager pager = (ViewPager) getActivity().findViewById(R.id.comics_pager);
 					
@@ -89,6 +92,39 @@ public class ComicFragment extends Fragment {
 					}
 				}
 			});
+
+			image.setOnTouchListener(new View.OnTouchListener() {
+				int m_x;
+				int m_y;
+
+				@Override
+				public boolean onTouch(View view, MotionEvent event) {
+					switch (event.getAction()) {
+					case MotionEvent.ACTION_DOWN:
+						m_x = Math.round(event.getX());
+						m_y = Math.round(event.getY());
+						break;
+					case MotionEvent.ACTION_UP:
+						int x = Math.round(event.getX());
+						int y = Math.round(event.getY());
+						
+						if (x == m_x && y == m_y) {
+							int width = view.getWidth();
+							
+							if (x <= width/6) {
+								onLeftSideTapped();
+							} else if (x >= width-(width/6)) {
+								onRightSideTapped();
+							}
+						}
+						
+						break;
+					}
+					
+					return false;
+				}
+			});
+			
 		}
 		
 		TextView page = (TextView) view.findViewById(R.id.comic_page);
@@ -96,16 +132,25 @@ public class ComicFragment extends Fragment {
 		if (page != null) {
 			page.setText(String.valueOf(m_page+1));
 		}
-		
+
 		return view;
 		
 	}
 	
+	private void onLeftSideTapped() {
+		m_activity.selectPreviousComic();
+	}
+
+	private void onRightSideTapped() {
+		m_activity.selectNextComic();
+	}
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
+		m_activity = (CommonActivity) activity;
 	}
 	
 	@Override
