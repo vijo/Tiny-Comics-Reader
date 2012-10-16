@@ -94,6 +94,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			if (info != null) {
 				if (size != -1) {
 					info.setText(getString(R.string.file_progress_info, lastPos+1, size));
+					info.setVisibility(View.VISIBLE);
 				} else {
 					info.setVisibility(View.GONE);
 				}
@@ -105,6 +106,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				if (size != -1) {
 					progressBar.setMax(size-1);
 					progressBar.setProgress(lastPos);
+					progressBar.setVisibility(View.VISIBLE);
 				} else {
 					progressBar.setVisibility(View.GONE);
 				}

@@ -43,7 +43,7 @@ public class CommonActivity extends FragmentActivity {
      	
     	if (m_prefs.getBoolean("use_position_sync", false)) {
         	String googleAccount = getGoogleAccount();
-        
+        	
 	    	if (googleAccount != null) {
 	    		m_syncClient.setOwner(googleAccount);    			
 	    	} else {
@@ -51,7 +51,7 @@ public class CommonActivity extends FragmentActivity {
 	    		
 	    		SharedPreferences.Editor editor = m_prefs.edit();
 	    		editor.putBoolean("use_position_sync", false);
-	    		editor.commit();
+	    		editor.commit(); 
 	    		
 	    		//m_syncClient.setOwner("TEST-ACCOUNT");
 	    	}

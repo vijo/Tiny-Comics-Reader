@@ -215,7 +215,7 @@ public class MainActivity extends CommonActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 	    if (requestCode == REQUEST_VIEWCOMIC) {
-	    	//Log.d(TAG, "finished viewing comic: " + m_fileName);
+	    	Log.d(TAG, "finished viewing comic: " + m_fileName);
 	    	
 	    	if (m_prefs.getBoolean("use_position_sync", false) && m_syncClient.hasOwner()) {
 	    		toast(R.string.sync_uploading);

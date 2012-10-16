@@ -174,6 +174,8 @@ public class ViewComicActivity extends CommonActivity {
 							AlertDialog alert = builder.create();
 							alert.show();
 
+						} else {
+							toast(R.string.error_sync_no_data);
 						}
 						
 					}				
