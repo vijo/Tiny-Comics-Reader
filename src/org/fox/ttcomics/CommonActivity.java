@@ -60,6 +60,7 @@ public class CommonActivity extends FragmentActivity {
 		
 		if (Environment.MEDIA_MOUNTED.equals(state)) {
 		    m_storageAvailable = true;
+		    m_storageWritable = true;
 		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
 			m_storageAvailable = true;
 			m_storageWritable = false;
