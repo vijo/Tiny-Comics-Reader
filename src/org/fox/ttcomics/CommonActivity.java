@@ -7,9 +7,11 @@ import java.util.Date;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +21,6 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
-import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 public class CommonActivity extends FragmentActivity {
@@ -39,11 +40,16 @@ public class CommonActivity extends FragmentActivity {
 	private boolean m_storageAvailable;
 	private boolean m_storageWritable;
 
+	private SQLiteDatabase m_readableDb;
+	private SQLiteDatabase m_writableDb;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
     	m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    	
+    	initDatabase();
 	}
 	
 	@Override
@@ -100,53 +106,133 @@ public class CommonActivity extends FragmentActivity {
 		//
 	}
 
+	public Cursor findComicByFileName(String fileName) {
+		Cursor c = getReadableDb().query("comics_cache", null,
+				"filename = ?",
+				new String[] { fileName }, null, null, null);
+
+		if (c.moveToFirst()) {
+			return c;
+		} else {
+			c.close();
+			
+			SQLiteStatement stmt = getWritableDb().compileStatement("INSERT INTO comics_cache " +
+					"(filename, position, max_position, size) VALUES (?, 0, 0, -1)");
+			stmt.bindString(1, fileName);
+			stmt.execute();
+			
+			c = getReadableDb().query("comics_cache", null,
+					"filename = ?",
+					new String[] { fileName }, null, null, null);
+			
+			if (c.moveToFirst()) {
+				return c;
+			} else {
+				c.close();
+			}
+		}
+
+		return null;
+	}
+	
 	public void setSize(String fileName, int size) {
-		SharedPreferences lastread = getSharedPreferences("lastread", 0);
+		//Log.d(TAG, "setSize:" + fileName + "=" + size);
+		
+		Cursor c = findComicByFileName(fileName);
+		
+		if (c != null) {
+			c.close();
 
-		SharedPreferences.Editor editor = lastread.edit();    	
-    	editor.putInt(fileName + ":size", size);
-    	
-    	editor.commit();
-
+			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET size = ? WHERE filename = ?");
+			stmt.bindLong(1, size);
+			stmt.bindString(2, fileName);
+			stmt.execute();
+			stmt.close();
+		}
 	}
 	
 	public void setLastPosition(String fileName, int position) {
-    	SharedPreferences lastread = getSharedPreferences("lastread", 0);
-    	
-    	int lastPosition = getLastPosition(fileName);
-    	
-    	SharedPreferences.Editor editor = lastread.edit();    	
-    	editor.putInt(fileName + ":last", position);
-    	editor.putInt(fileName + ":max", Math.max(lastPosition, position));
-    	
-    	editor.commit();
+		int lastPosition = getLastPosition(fileName);
+		
+		Cursor c = findComicByFileName(fileName);
+		
+		if (c != null) {
+			c.close();
+
+			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET position = ?, max_position = ? WHERE filename = ?");
+			stmt.bindLong(1, position);
+			stmt.bindLong(2, Math.max(position, lastPosition));
+			stmt.bindString(3, fileName);
+			stmt.execute();
+			stmt.close();
+		}
+		
 	}
 	
 	public void setLastMaxPosition(String fileName, int position) {
-    	SharedPreferences lastread = getSharedPreferences("lastread", 0);
-    	
-    	SharedPreferences.Editor editor = lastread.edit();    	
-    	editor.putInt(fileName + ":max", position);
-    	
-    	editor.commit();
+
+		Cursor c = findComicByFileName(fileName);
+		
+		if (c != null) {
+			c.close();
+
+			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET max_position = ? WHERE filename = ?");
+			stmt.bindLong(1, position);
+			stmt.bindString(2, fileName);
+			stmt.execute();
+			stmt.close();
+		}	
 	}
 	
 	public int getLastPosition(String fileName) { 
-		SharedPreferences lastread = getSharedPreferences("lastread", 0);
-	
-		return lastread.getInt(fileName + ":last", 0);
+		int position = 0;
+		
+		Cursor c = getReadableDb().query("comics_cache", new String[] { "position" },
+				"filename = ?",
+				new String[] { fileName }, null, null, null);
+
+		if (c.moveToFirst()) {
+			position = c.getInt(c.getColumnIndex("position"));
+		}
+
+		c.close();
+		
+		return position;
+
 	}
 
 	public int getMaxPosition(String fileName) { 
-		SharedPreferences lastread = getSharedPreferences("lastread", 0);
-	
-		return lastread.getInt(fileName + ":max", 0);
+		int position = 0;
+		
+		Cursor c = getReadableDb().query("comics_cache", new String[] { "max_position" },
+				"filename = ?",
+				new String[] { fileName }, null, null, null);
+
+		if (c.moveToFirst()) {
+			position = c.getInt(c.getColumnIndex("max_position"));
+		}
+
+		c.close();
+		
+		return position;
 	}
 
 	public int getSize(String fileName) { 
-		SharedPreferences lastread = getSharedPreferences("lastread", 0);
-	
-		return lastread.getInt(fileName + ":size", -1);
+		int size = -1;
+		
+		Cursor c = getReadableDb().query("comics_cache", new String[] { "size" },
+				"filename = ?",
+				new String[] { fileName }, null, null, null);
+
+		if (c.moveToFirst()) {
+			size = c.getInt(c.getColumnIndex("size"));
+		}
+
+		c.close();
+		
+		Log.d(TAG, "getSize:" + fileName + "=" + size);
+		
+		return size;
 	}
 
     public void onComicSelected(String fileName, int position) {
@@ -293,4 +379,28 @@ public class CommonActivity extends FragmentActivity {
 	public boolean isStorageWritable() {
 		return m_storageWritable;
 	}
+	
+	private void initDatabase() {
+		DatabaseHelper dh = new DatabaseHelper(getApplicationContext());
+		
+		m_writableDb = dh.getWritableDatabase();
+		m_readableDb = dh.getReadableDatabase();
+	}
+	
+	public synchronized SQLiteDatabase getReadableDb() {
+		return m_readableDb;
+	}
+
+	public synchronized SQLiteDatabase getWritableDb() {
+		return m_writableDb;
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+
+		m_readableDb.close();
+		m_writableDb.close();
+	}
+
 }

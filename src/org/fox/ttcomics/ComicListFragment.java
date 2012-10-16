@@ -256,11 +256,12 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 	    				if (archive.isDirectory() && m_mode == 0) {
 	    					m_files.add(filePath);
 	    					
-	    				} else if (archive.getName().toLowerCase().matches(".*\\.(cbz|zip)") && isAdded() && m_activity != null) {
+	    				} else if (archive.getName().toLowerCase().matches(".*\\.(cbz|zip)") && isAdded() && m_activity != null && 
+	    						m_activity.getWritableDb() != null && m_activity.getWritableDb().isOpen()) {
 	    					try {
 	    						int size = m_activity.getSize(filePath);
 	    						
-	    						if (m_activity.isStorageWritable() && (size == -1 || fullRescan)) {
+	    						if (size == -1 || fullRescan) {
 	    						
 									CbzComicArchive cba = new CbzComicArchive(filePath);
 									
@@ -268,11 +269,11 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 										// Get cover
 										
 										try {
-											InputStream is = cba.getItem(0);
-										
 											File thumbnailFile = new File(m_activity.getCacheFileName(filePath));
 
-											if (!thumbnailFile.exists() || fullRescan) {
+											if (m_activity.isStorageWritable() && (!thumbnailFile.exists() || fullRescan)) {
+												InputStream is = cba.getItem(0);
+
 												FileOutputStream fos = new FileOutputStream(thumbnailFile);							
 												
 												byte[] buffer = new byte[1024];
@@ -284,6 +285,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 												fos.close();
 												is.close();
 											}
+
 										} catch (IOException e) {
 											e.printStackTrace();
 										}
