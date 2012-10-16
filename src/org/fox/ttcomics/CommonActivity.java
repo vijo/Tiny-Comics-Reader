@@ -35,6 +35,9 @@ public class CommonActivity extends FragmentActivity {
 	protected SyncClient m_syncClient = new SyncClient();
 
 	private boolean m_smallScreenMode = true;
+	
+	private boolean m_storageAvailable;
+	private boolean m_storageWritable;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,18 @@ public class CommonActivity extends FragmentActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		
+		String state = Environment.getExternalStorageState();
+		
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+		    m_storageAvailable = true;
+		} else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+			m_storageAvailable = true;
+			m_storageWritable = false;
+		} else {
+			m_storageAvailable = false;
+			m_storageWritable = false;
+		}
 		
     	if (m_prefs.getBoolean("use_position_sync", false)) {
         	String googleAccount = getGoogleAccount();
@@ -269,5 +284,13 @@ public class CommonActivity extends FragmentActivity {
 				}				
 			}
 		}
+	}
+	
+	public boolean isStorageAvailable() {
+		return m_storageAvailable;
+	}
+	
+	public boolean isStorageWritable() {
+		return m_storageWritable;
 	}
 }

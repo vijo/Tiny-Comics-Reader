@@ -117,7 +117,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
 			if (thumbnail != null) {
-				if (thumbnailFile.exists()) {
+				if (m_activity.isStorageAvailable() && thumbnailFile.exists()) {
 					//
 					
 				    final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -260,7 +260,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 	    					try {
 	    						int size = m_activity.getSize(filePath);
 	    						
-	    						if (size == -1 || fullRescan) {
+	    						if (m_activity.isStorageWritable() && (size == -1 || fullRescan)) {
 	    						
 									CbzComicArchive cba = new CbzComicArchive(filePath);
 									
@@ -345,7 +345,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 	
 		String comicsDir = m_prefs.getString("comics_directory", null);
 		
-		if (comicsDir != null) {
+		if (comicsDir != null && m_activity.isStorageAvailable()) {
 			rescanTask.execute(m_baseDirectory.length() > 0 ? m_baseDirectory : comicsDir);
 		}
 	}
