@@ -80,6 +80,21 @@ public class DirectoryPicker extends ListActivity {
             }
         });
         
+        Button btnParent = (Button) findViewById(R.id.btnParent);
+        btnParent.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+            	Intent intent = new Intent(DirectoryPicker.this, DirectoryPicker.class);
+                intent.putExtra(DirectoryPicker.START_DIR, dir.getParent());
+                intent.putExtra(DirectoryPicker.SHOW_HIDDEN, showHidden);
+                intent.putExtra(DirectoryPicker.ONLY_DIRS, onlyDirs);
+                startActivityForResult(intent, PICK_DIRECTORY);
+            }
+        });
+        
+        if (dir.getParent() == null) {
+        	btnParent.setVisibility(View.GONE);
+        }
+        
         ListView lv = getListView();
         lv.setTextFilterEnabled(true);
         

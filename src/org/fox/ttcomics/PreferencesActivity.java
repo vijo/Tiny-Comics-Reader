@@ -38,8 +38,8 @@ public class PreferencesActivity extends PreferenceActivity {
 			public boolean onPreferenceClick(Preference preference) {
 				Intent intent = new Intent(PreferencesActivity.this, DirectoryPicker.class);
 				
-				//intent.putExtra(DirectoryPicker.START_DIR, prefs.getString("comics_directory", 
-				//		Environment.getExternalStorageDirectory().getAbsolutePath()));
+				intent.putExtra(DirectoryPicker.START_DIR, prefs.getString("comics_directory", 
+						Environment.getExternalStorageDirectory().getAbsolutePath()));
 				
 				startActivityForResult(intent, DirectoryPicker.PICK_DIRECTORY);				
 				return true;

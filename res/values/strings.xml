@@ -51,4 +51,5 @@
     <string name="prefs_sync">Sync</string>
     <string name="prefs_clear_sync_data">Clear sync data</string>
     <string name="prefs_clear_sync_data_summary">Removes all remotely stored sync data</string>
+    <string name="open_parent">Open parent</string>
 </resources>
