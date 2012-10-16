@@ -69,7 +69,11 @@ public class ComicPager extends Fragment {
 		ViewPager pager = (ViewPager) getView().findViewById(R.id.comics_pager);
 		
 		if (pager != null) {
-			pager.setCurrentItem(item);
+			try {
+				pager.setCurrentItem(item);
+			} catch (IndexOutOfBoundsException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

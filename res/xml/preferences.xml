@@ -8,7 +8,7 @@
             android:title="@string/prefs_comics_directory" >
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="Sync" >    
+    <PreferenceCategory android:title="@string/prefs_sync" >    
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="use_position_sync"
@@ -19,8 +19,8 @@
         <Preference
             android:dependency="use_position_sync"
             android:key="clear_sync_data"
-            android:title="Clear sync data"
-            android:summary="Removes all remotely stored sync data" >
+            android:title="@string/prefs_clear_sync_data"
+            android:summary="@string/prefs_clear_sync_data_summary" >
         </Preference>
         
     </PreferenceCategory>

@@ -48,4 +48,7 @@
     <string name="error_sync_no_data">No information stored or you are on the furthest read page.</string>
     <string name="dialog_clear_data">Clear data</string>
     <string name="dialog_clear_data_title">Clear all remotely stored sync data?</string>
+    <string name="prefs_sync">Sync</string>
+    <string name="prefs_clear_sync_data">Clear sync data</string>
+    <string name="prefs_clear_sync_data_summary">Removes all remotely stored sync data</string>
 </resources>
