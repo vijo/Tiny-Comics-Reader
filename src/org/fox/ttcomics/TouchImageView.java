@@ -26,6 +26,7 @@ public class TouchImageView extends ImageView {
 	}
 	
 	OnScaleChangedListener mScaleChangedListener;
+	View.OnTouchListener mCustomOnTouchListener;
 	
     Matrix matrix = new Matrix();
 
@@ -73,7 +74,7 @@ public class TouchImageView extends ImageView {
         setScaleType(ScaleType.MATRIX);
         
         setOnTouchListener(new OnTouchListener() {
-
+        	@Override
         	public boolean onTouch(View v, MotionEvent event) {
             	mScaleDetector.onTouchEvent(event);
 
@@ -136,6 +137,11 @@ public class TouchImageView extends ImageView {
             	}
                 setImageMatrix(matrix);
                 invalidate();
+                
+                if (mCustomOnTouchListener != null) {
+                	mCustomOnTouchListener.onTouch(v, event);
+                }
+                
                 return true; // indicate event was handled
             }
 
@@ -255,5 +261,9 @@ public class TouchImageView extends ImageView {
     
     public void setOnScaleChangedListener(OnScaleChangedListener listener) {
     	mScaleChangedListener = listener;
+    }
+    
+    public void setCustomOnTouchListener(View.OnTouchListener listener) {
+    	mCustomOnTouchListener = listener;
     }
 }

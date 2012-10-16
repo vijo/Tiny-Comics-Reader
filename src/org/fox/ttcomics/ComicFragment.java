@@ -93,7 +93,7 @@ public class ComicFragment extends Fragment {
 				}
 			});
 
-			image.setOnTouchListener(new View.OnTouchListener() {
+			image.setCustomOnTouchListener(new View.OnTouchListener() {
 				int m_x;
 				int m_y;
 
@@ -116,11 +116,9 @@ public class ComicFragment extends Fragment {
 							} else if (x >= width-(width/6)) {
 								onRightSideTapped();
 							}
-						}
-						
+						}						
 						break;
-					}
-					
+					}					
 					return false;
 				}
 			});
