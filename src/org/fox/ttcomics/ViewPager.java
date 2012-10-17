@@ -37,7 +37,7 @@ public class ViewPager extends android.support.v4.view.ViewPager {
         this.enabled = enabled;
     }
     
-    public boolean getPagingEnabled() {
+    public boolean isPagingEnabled() {
     	return this.enabled;
     }
 }

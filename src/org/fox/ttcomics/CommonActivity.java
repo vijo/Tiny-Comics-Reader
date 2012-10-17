@@ -407,7 +407,7 @@ public class CommonActivity extends FragmentActivity {
 	public void selectPreviousComic() {
 		ComicPager frag = (ComicPager) getSupportFragmentManager().findFragmentByTag(FRAG_COMICS_PAGER);
 		
-		if (frag != null && frag.isAdded() && frag.getPosition() > 0) {
+		if (frag != null && frag.isAdded() && frag.getPosition() > 0 && frag.isPagingEnabled()) {
 			frag.setCurrentItem(frag.getPosition() - 1);
 		}		
 	}
@@ -415,7 +415,7 @@ public class CommonActivity extends FragmentActivity {
 	public void selectNextComic() {
 		ComicPager frag = (ComicPager) getSupportFragmentManager().findFragmentByTag(FRAG_COMICS_PAGER);
 		
-		if (frag != null && frag.isAdded() && frag.getPosition() < frag.getCount()-1) {
+		if (frag != null && frag.isAdded() && frag.getPosition() < frag.getCount()-1 && frag.isPagingEnabled()) {
 			frag.setCurrentItem(frag.getPosition() + 1);
 		}		
 		

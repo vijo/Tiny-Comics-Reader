@@ -121,11 +121,8 @@ public class ImageViewTouch extends ImageViewTouchBase {
 		if ( !mScaleDetector.isInProgress() ) mCurrentScaleFactor = scale;
 		
 		if (mScaleChangedListener != null) {
-			RectF bitmapRect = getBitmapRect();
-			
-			boolean widthFits = getWidth() >= (bitmapRect.right - bitmapRect.left);
-			
-			mScaleChangedListener.onScaleChanged(mCurrentScaleFactor, widthFits);
+			RectF bitmapRect = getBitmapRect();			
+			mScaleChangedListener.onScaleChanged(mCurrentScaleFactor, getWidth() >= (bitmapRect.right - bitmapRect.left));
 		}
 	}
 
