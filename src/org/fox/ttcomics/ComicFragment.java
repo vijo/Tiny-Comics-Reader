@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -69,7 +70,7 @@ public class ComicFragment extends Fragment {
 		
 		View view = inflater.inflate(R.layout.fragment_comic, container, false);
 		
-		ImageViewTouch image = (ImageViewTouch) view.findViewById(R.id.comic_image);
+		final ImageViewTouch image = (ImageViewTouch) view.findViewById(R.id.comic_image);
 		
 		if (savedInstanceState != null) {
 			m_page = savedInstanceState.getInt("page");
@@ -83,7 +84,23 @@ public class ComicFragment extends Fragment {
 			}
 			
 			image.setFitToScreen(true);
-			image.setImageBitmap(loadImage(pager.getArchive(), m_page));
+			
+			AsyncTask<ComicArchive, Void, Bitmap> loadTask = new AsyncTask<ComicArchive, Void, Bitmap>() {
+				@Override
+				protected Bitmap doInBackground(ComicArchive... params) {
+					return loadImage(params[0], m_page);
+				}
+				
+				@Override
+				protected void onPostExecute(Bitmap result) {
+					if (getActivity() != null && isAdded() && result != null) {
+						image.setImageBitmap(result);
+					}					
+				}
+			};
+			
+			loadTask.execute(pager.getArchive());
+			
 			image.setOnScaleChangedListener(new ImageViewTouch.OnScaleChangedListener() {
 				@Override
 				public void onScaleChanged(float scale, boolean widthFits) {
