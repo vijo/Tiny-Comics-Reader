@@ -112,13 +112,6 @@ public class ImageViewTouch extends ImageViewTouchBase {
 				}
 				break;
 		}
-		if (mScaleChangedListener != null) {
-			RectF bitmapRect = getBitmapRect();
-			
-			boolean widthFits = getWidth() >= (bitmapRect.right - bitmapRect.left);
-			
-			mScaleChangedListener.onScaleChanged(mCurrentScaleFactor, widthFits);
-		}
 		return true;
 	}
 
@@ -126,6 +119,14 @@ public class ImageViewTouch extends ImageViewTouchBase {
 	protected void onZoom( float scale ) {
 		super.onZoom( scale );
 		if ( !mScaleDetector.isInProgress() ) mCurrentScaleFactor = scale;
+		
+		if (mScaleChangedListener != null) {
+			RectF bitmapRect = getBitmapRect();
+			
+			boolean widthFits = getWidth() >= (bitmapRect.right - bitmapRect.left);
+			
+			mScaleChangedListener.onScaleChanged(mCurrentScaleFactor, widthFits);
+		}
 	}
 
 	protected float onDoubleTapPost( float scale, float maxZoom ) {
