@@ -86,11 +86,11 @@ public class ComicFragment extends Fragment {
 			image.setImageBitmap(loadImage(pager.getArchive(), m_page));
 			image.setOnScaleChangedListener(new ImageViewTouch.OnScaleChangedListener() {
 				@Override
-				public void onScaleChanged(float scale) {
+				public void onScaleChanged(float scale, boolean widthFits) {
 					ViewPager pager = (ViewPager) getActivity().findViewById(R.id.comics_pager);
 					
 					if (pager != null) {
-						pager.setPagingEnabled(scale - 1.0f < 0.01);
+						pager.setPagingEnabled(widthFits);
 					}
 				}
 			}); 

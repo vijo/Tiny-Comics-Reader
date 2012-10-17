@@ -34,7 +34,7 @@ public class ImageViewTouch extends ImageViewTouchBase {
     private OnImageViewTouchDoubleTapListener doubleTapListener;
 
     public interface OnScaleChangedListener {
-		public void onScaleChanged(float scale);
+		public void onScaleChanged(float scale, boolean widthFits);
 	}
     
     protected OnScaleChangedListener mScaleChangedListener;
@@ -113,7 +113,11 @@ public class ImageViewTouch extends ImageViewTouchBase {
 				break;
 		}
 		if (mScaleChangedListener != null) {
-			mScaleChangedListener.onScaleChanged(mCurrentScaleFactor);
+			RectF bitmapRect = getBitmapRect();
+			
+			boolean widthFits = getWidth() >= (bitmapRect.right - bitmapRect.left);
+			
+			mScaleChangedListener.onScaleChanged(mCurrentScaleFactor, widthFits);
 		}
 		return true;
 	}
