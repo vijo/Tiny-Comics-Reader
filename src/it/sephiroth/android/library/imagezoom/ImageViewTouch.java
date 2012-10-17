@@ -7,6 +7,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
@@ -41,7 +42,7 @@ public class ImageViewTouch extends ImageViewTouchBase {
 	public ImageViewTouch( Context context, AttributeSet attrs ) {
 		super( context, attrs );
 	}
-
+	
 	@Override
 	protected void init() {
 		super.init();
@@ -126,12 +127,18 @@ public class ImageViewTouch extends ImageViewTouchBase {
 	protected float onDoubleTapPost( float scale, float maxZoom ) {
 		if ( mDoubleTapDirection == 1 ) {
 			if (mCurrentScaleFactor - 1.0f < 0.01) { //( scale + ( mScaleFactor * 2 ) ) <= maxZoom
-				
-				float w = getBitmapRect().right - getBitmapRect().left;
+
 				float scaleFactor = mScaleFactor;
+
+				RectF bitmapRect = getBitmapRect();
+				
+				float w = bitmapRect.right - bitmapRect.left;
+				float h = bitmapRect.bottom - bitmapRect.top;
 				
 				if (w < getWidth()) {
-					scaleFactor = (float)getWidth() / (float)w - scale;
+					scaleFactor = (float)getWidth() / w - scale;
+				} else if (h < getHeight()) {
+					scaleFactor = (float)getHeight() / h - scale;
 				}
 				
 				return scale + scaleFactor;
