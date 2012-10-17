@@ -1,5 +1,7 @@
 package org.fox.ttcomics;
 
+import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -16,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
 public class ComicFragment extends Fragment {
@@ -66,7 +69,7 @@ public class ComicFragment extends Fragment {
 		
 		View view = inflater.inflate(R.layout.fragment_comic, container, false);
 		
-		TouchImageView image = (TouchImageView) view.findViewById(R.id.comic_image);
+		ImageViewTouch image = (ImageViewTouch) view.findViewById(R.id.comic_image);
 		
 		if (savedInstanceState != null) {
 			m_page = savedInstanceState.getInt("page");
@@ -79,10 +82,9 @@ public class ComicFragment extends Fragment {
 				image.setBackgroundColor(0xff000000);
 			}
 			
-			
+			image.setFitToScreen(true);
 			image.setImageBitmap(loadImage(pager.getArchive(), m_page));
-			image.setMaxZoom(4f);
-			image.setOnScaleChangedListener(new TouchImageView.OnScaleChangedListener() {
+			image.setOnScaleChangedListener(new ImageViewTouch.OnScaleChangedListener() {
 				@Override
 				public void onScaleChanged(float scale) {
 					ViewPager pager = (ViewPager) getActivity().findViewById(R.id.comics_pager);
@@ -91,9 +93,9 @@ public class ComicFragment extends Fragment {
 						pager.setPagingEnabled(scale - 1.0f < 0.01);
 					}
 				}
-			});
+			}); 
 
-			image.setCustomOnTouchListener(new View.OnTouchListener() {
+			image.setOnTouchListener(new View.OnTouchListener() {
 				int m_x;
 				int m_y;
 
@@ -121,9 +123,9 @@ public class ComicFragment extends Fragment {
 					}					
 					return false;
 				}
-			});
+			}); 
 			
-		}
+		} 
 		
 		TextView page = (TextView) view.findViewById(R.id.comic_page);
 		
