@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.ZoomDensity;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,7 +33,6 @@ public class ComicFragment extends Fragment {
 	private SharedPreferences m_prefs;
 	private int m_page;
 	private CommonActivity m_activity;
-	private File m_imageFile;
 	
 	public ComicFragment() {
 		super();
@@ -42,33 +42,6 @@ public class ComicFragment extends Fragment {
 		super();
 		m_page = page;
 	}
-	
-	/* public Bitmap loadImage(ComicArchive archive, int page) {
-		CommonActivity activity = (CommonActivity) getActivity();
-		
-		try {			
-			final BitmapFactory.Options options = new BitmapFactory.Options();
-		    options.inJustDecodeBounds = true;
-		    BitmapFactory.decodeStream(archive.getItem(page), null, options);
-
-	    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
-		    options.inJustDecodeBounds = false;
-		    
-			return BitmapFactory.decodeStream(archive.getItem(page), null, options);
-		} catch (OutOfMemoryError e) {
-			if (activity != null) {		
-				activity.toast(R.string.error_out_of_memory);
-			}
-			e.printStackTrace();
-		} catch (IOException e) {
-			if (activity != null) {
-				activity.toast(R.string.error_loading_image);
-			}
-			e.printStackTrace();
-		}
-		
-		return null;
-	} */
 	
 	@SuppressLint("NewApi")
 	@Override
@@ -91,9 +64,10 @@ public class ComicFragment extends Fragment {
 			
 			WebSettings ws = web.getSettings();
 			ws.setSupportZoom(true);
-			ws.setBuiltInZoomControls(true);
-			ws.setCacheMode(WebSettings.LOAD_NO_CACHE);
-			//ws.setUseWideViewPort(true);
+			ws.setBuiltInZoomControls(false); // http://code.google.com/p/android/issues/detail?id=36713
+			//ws.setCacheMode(WebSettings.LOAD_NO_CACHE);
+			//ws.setDefaultZoom(ZoomDensity.FAR);
+			ws.setUseWideViewPort(true);
 			ws.setLoadWithOverviewMode(true);
 			
 		    // prevent flicker in ics
@@ -101,24 +75,22 @@ public class ComicFragment extends Fragment {
 		    	web.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		    }
     	    
-		    AsyncTask<InputStream, Void, File> loadTask = new AsyncTask<InputStream, Void, File>() {
+		    AsyncTask<InputStream, Void, ByteArrayOutputStream> loadTask = new AsyncTask<InputStream, Void, ByteArrayOutputStream>() {
 				@Override
-				protected File doInBackground(InputStream... params) {
+				protected ByteArrayOutputStream doInBackground(InputStream... params) {
 					try {
-				    	File imageFile = File.createTempFile("tcrview", ".jpg", getActivity().getExternalCacheDir());
-				    	
-						InputStream in = params[0];
-						FileOutputStream out = new FileOutputStream(imageFile);
+				    	InputStream in = params[0];
+						ByteArrayOutputStream out = new ByteArrayOutputStream();
 						
 						int c;
 						while ((c = in.read()) != -1) {
 							out.write(c);
 						}
 						
-						out.close();
+						out.flush();
 						in.close();
 						
-						return imageFile;
+						return out;
 						
 					} catch (IOException e) {				
 						e.printStackTrace();
@@ -130,27 +102,24 @@ public class ComicFragment extends Fragment {
 				}
 				
 				@Override
-				protected void onPostExecute(File result) {
+				protected void onPostExecute(ByteArrayOutputStream result) {
 					if (getActivity() != null && isAdded()) {
 						if (result != null) {
-							String url = "file://" + result.getAbsolutePath();
+							String url = "data:image/jpeg;base64," + Base64.encodeToString(result.toByteArray(), Base64.DEFAULT | Base64.NO_WRAP);
 							
 							String content = "<html>" +
-									"<head>" +
+									"<head>" +									
 									"<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\">" +
 									"<style type=\"text/css\">" +
 									"body { padding : 0px; margin : 0px; background : transparent; }" +
+									"img { max-height: 100%; max-width : 100%; }" +
 									"</style>" +
 									"</head>" +
-									"<body><table width='100%' height='100%'>" +
-									"<tr><td><img width='100%' src=\""+ url  +"\"></td></tr>" +
-									"</table></body></html>";
-						    
-							Log.d(TAG, content);
+									"<body>" +
+									"<table width='100%' height='100%'><tr><td><img src=\""+ url  +"\"></td></tr></table>" +
+									"</body></html>";
 							
 							web.loadDataWithBaseURL(null, content, "text/html", "utf-8", null);
-							
-							m_imageFile = result;
 						} else {
 							((CommonActivity) getActivity()).toast(R.string.error_loading_image);
 						}
@@ -218,10 +187,6 @@ public class ComicFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		
-		if (m_imageFile != null) {
-			m_imageFile.delete();
-		}
 	}
 
 	@Override
