@@ -127,11 +127,11 @@ public class ImageViewTouch extends ImageViewTouchBase {
 		if ( mDoubleTapDirection == 1 ) {
 			if (mCurrentScaleFactor - 1.0f < 0.01) { //( scale + ( mScaleFactor * 2 ) ) <= maxZoom
 				
-				float w = getDrawable().getIntrinsicWidth() * mCurrentScaleFactor;
+				float w = getBitmapRect().right - getBitmapRect().left;
 				float scaleFactor = mScaleFactor;
 				
 				if (w < getWidth()) {
-					scaleFactor = (getWidth() / w) - 1f + 0.1f; 
+					scaleFactor = (float)getWidth() / (float)w - scale;
 				}
 				
 				return scale + scaleFactor;
