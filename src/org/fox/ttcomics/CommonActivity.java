@@ -108,9 +108,11 @@ public class CommonActivity extends FragmentActivity {
 	}
 
 	public Cursor findComicByFileName(String fileName) {
+		File file = new File(fileName);
+
 		Cursor c = getReadableDb().query("comics_cache", null,
-				"filename = ?",
-				new String[] { fileName }, null, null, null);
+				"filename = ? AND path = ?",
+				new String[] { file.getName(), file.getParentFile().getAbsolutePath() }, null, null, null);
 
 		if (c.moveToFirst()) {
 			return c;
@@ -118,13 +120,14 @@ public class CommonActivity extends FragmentActivity {
 			c.close();
 			
 			SQLiteStatement stmt = getWritableDb().compileStatement("INSERT INTO comics_cache " +
-					"(filename, position, max_position, size) VALUES (?, 0, 0, -1)");
-			stmt.bindString(1, fileName);
+					"(filename, path, position, max_position, size, checksum) VALUES (?, ?, 0, 0, -1, '')");
+			stmt.bindString(1, file.getName());
+			stmt.bindString(2, file.getParentFile().getAbsolutePath());
 			stmt.execute();
 			
 			c = getReadableDb().query("comics_cache", null,
-					"filename = ?",
-					new String[] { fileName }, null, null, null);
+					"filename = ? AND path = ?",
+					new String[] { file.getName(), file.getParentFile().getAbsolutePath() }, null, null, null);
 			
 			if (c.moveToFirst()) {
 				return c;
@@ -137,21 +140,39 @@ public class CommonActivity extends FragmentActivity {
 	}
 	
 	public void setSize(String fileName, int size) {
-		//Log.d(TAG, "setSize:" + fileName + "=" + size);
-		
 		Cursor c = findComicByFileName(fileName);
 		
 		if (c != null) {
 			c.close();
-
-			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET size = ? WHERE filename = ?");
+			
+			File file = new File(fileName);
+			
+			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET size = ? WHERE filename = ? AND path = ?");
 			stmt.bindLong(1, size);
-			stmt.bindString(2, fileName);
+			stmt.bindString(2, file.getName());
+			stmt.bindString(3, file.getParentFile().getAbsolutePath());
 			stmt.execute();
 			stmt.close();
 		}
 	}
-	
+
+	public void setChecksum(String fileName, String checksum) {
+		Cursor c = findComicByFileName(fileName);
+		
+		if (c != null) {
+			c.close();
+			
+			File file = new File(fileName);
+			
+			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET checksum = ? WHERE filename = ? AND path = ?");
+			stmt.bindString(1, checksum);
+			stmt.bindString(2, file.getName());
+			stmt.bindString(3, file.getParentFile().getAbsolutePath());
+			stmt.execute();
+			stmt.close();
+		}
+	}
+
 	public void setLastPosition(String fileName, int position) {
 		int lastPosition = getLastPosition(fileName);
 		
@@ -160,10 +181,13 @@ public class CommonActivity extends FragmentActivity {
 		if (c != null) {
 			c.close();
 
-			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET position = ?, max_position = ? WHERE filename = ?");
+			File file = new File(fileName);
+			
+			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET position = ?, max_position = ? WHERE filename = ? AND path = ?");
 			stmt.bindLong(1, position);
 			stmt.bindLong(2, Math.max(position, lastPosition));
-			stmt.bindString(3, fileName);
+			stmt.bindString(3, file.getName());
+			stmt.bindString(4, file.getParentFile().getAbsolutePath());
 			stmt.execute();
 			stmt.close();
 		}
@@ -177,9 +201,12 @@ public class CommonActivity extends FragmentActivity {
 		if (c != null) {
 			c.close();
 
-			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET max_position = ? WHERE filename = ?");
+			File file = new File(fileName);
+			
+			SQLiteStatement stmt = getWritableDb().compileStatement("UPDATE comics_cache SET max_position = ? WHERE filename = ? AND path = ?");
 			stmt.bindLong(1, position);
-			stmt.bindString(2, fileName);
+			stmt.bindString(2, file.getName());
+			stmt.bindString(3, file.getParentFile().getAbsolutePath());
 			stmt.execute();
 			stmt.close();
 		}	
@@ -188,9 +215,11 @@ public class CommonActivity extends FragmentActivity {
 	public int getLastPosition(String fileName) { 
 		int position = 0;
 		
+		File file = new File(fileName);
+		
 		Cursor c = getReadableDb().query("comics_cache", new String[] { "position" },
-				"filename = ?",
-				new String[] { fileName }, null, null, null);
+				"filename = ? AND path = ?",
+				new String[] { file.getName(), file.getParentFile().getAbsolutePath() }, null, null, null);
 
 		if (c.moveToFirst()) {
 			position = c.getInt(c.getColumnIndex("position"));
@@ -205,9 +234,11 @@ public class CommonActivity extends FragmentActivity {
 	public int getMaxPosition(String fileName) { 
 		int position = 0;
 		
+		File file = new File(fileName);
+		
 		Cursor c = getReadableDb().query("comics_cache", new String[] { "max_position" },
-				"filename = ?",
-				new String[] { fileName }, null, null, null);
+				"filename = ? AND path = ?",
+				new String[] { file.getName(), file.getParentFile().getAbsolutePath() }, null, null, null);
 
 		if (c.moveToFirst()) {
 			position = c.getInt(c.getColumnIndex("max_position"));
@@ -221,9 +252,11 @@ public class CommonActivity extends FragmentActivity {
 	public int getSize(String fileName) { 
 		int size = -1;
 		
+		File file = new File(fileName);
+		
 		Cursor c = getReadableDb().query("comics_cache", new String[] { "size" },
-				"filename = ?",
-				new String[] { fileName }, null, null, null);
+				"filename = ? AND path = ?",
+				new String[] { file.getName(), file.getParentFile().getAbsolutePath() }, null, null, null);
 
 		if (c.moveToFirst()) {
 			size = c.getInt(c.getColumnIndex("size"));

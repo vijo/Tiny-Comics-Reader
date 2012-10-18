@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -215,6 +216,10 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 
+	public Cursor createCursor() {
+		return m_activity.getReadableDb().query("comics_cache", null, "path = ?",
+				new String[] { m_baseDirectory }, null, null, "filename");
+	}
 	
 	@Override
 	public void onAttach(Activity activity) {
