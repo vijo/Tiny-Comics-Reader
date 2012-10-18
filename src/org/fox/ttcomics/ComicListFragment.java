@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -36,11 +38,18 @@ import android.widget.TextView;
 
 public class ComicListFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
+
+	private final static int SIZE_DIR = -100;
+	
+	// corresponds to tab indexes
+	private final static int MODE_ALL = 0;
+	private final static int MODE_UNREAD = 1;
+	private final static int MODE_UNFINISHED = 2;
+	private final static int MODE_READ = 3;
 	
 	private CommonActivity m_activity;
 	private SharedPreferences m_prefs;
 	private ComicsListAdapter m_adapter;
-	private ArrayList<String> m_files = new ArrayList<String>();
 	private int m_mode = 0;
 	private String m_baseDirectory = "";
 
@@ -58,23 +67,24 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		m_mode = mode;
 	}
 
-	private class ComicsListAdapter extends ArrayAdapter<String> {
-		private ArrayList<String> items;
-
-		public ComicsListAdapter(Context context, int textViewResourceId, ArrayList<String> items) {
-			super(context, textViewResourceId, items);
-			this.items = items;
+	private class ComicsListAdapter extends SimpleCursorAdapter {
+		public ComicsListAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to, int flags) {
+			super(context, layout, c, from, to, flags);
+			// TODO Auto-generated constructor stub
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
 
-			File file = new File(items.get(position));
-			String fileBaseName = file.getName();
+			Cursor c = (Cursor) getItem(position);
+			
+			String filePath = c.getString(c.getColumnIndex("path"));
+			String fileBaseName = c.getString(c.getColumnIndex("filename"));
 
-			int lastPos = m_activity.getLastPosition(file.getAbsolutePath());
-			int size = m_activity.getSize(file.getAbsolutePath());
+			int lastPos = m_activity.getLastPosition(filePath + "/" + fileBaseName);
+			int size = m_activity.getSize(filePath + "/" + fileBaseName);
 
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -93,7 +103,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			TextView info = (TextView) v.findViewById(R.id.file_progress_info);
 			
 			if (info != null) {
-				if (size != -1) {
+				if (size != -1 && size != SIZE_DIR) {
 					info.setText(getString(R.string.file_progress_info, lastPos+1, size));
 					info.setVisibility(View.VISIBLE);
 				} else {
@@ -104,7 +114,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			ProgressBar progressBar = (ProgressBar) v.findViewById(R.id.file_progress_bar);
 			
 			if (progressBar != null) {
-				if (size != -1) {
+				if (size != -1 && size != SIZE_DIR) {
 					progressBar.setMax(size-1);
 					progressBar.setProgress(lastPos);
 					progressBar.setVisibility(View.VISIBLE);
@@ -113,7 +123,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				}
 			}
 			
-			File thumbnailFile = new File(m_activity.getCacheFileName(file.getAbsolutePath()));
+			File thumbnailFile = new File(m_activity.getCacheFileName(filePath + "/" + fileBaseName));
 			
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
@@ -150,10 +160,11 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		
 		if (savedInstanceState != null) {
 			m_mode = savedInstanceState.getInt("mode");
-			m_files = savedInstanceState.getStringArrayList("files");
+			//m_files = savedInstanceState.getStringArrayList("files");
 		}
 
-       	m_adapter = new ComicsListAdapter(getActivity(), R.layout.comics_list_row, m_files);
+       	m_adapter = new ComicsListAdapter(getActivity(), R.layout.comics_list_row, createCursor(), 
+       			new String[] { "filename" }, new int[] { R.id.file_name }, 0);
 
 		if (view.findViewById(R.id.comics_list) != null) {
 			ListView list = (ListView) view.findViewById(R.id.comics_list);
@@ -192,7 +203,8 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 				.getMenuInfo();
 		
-		String fileName = m_adapter.getItem(info.position);
+		Cursor c = (Cursor) m_adapter.getItem(info.position);		
+		String fileName = c.getString(c.getColumnIndex("path")) + "/" + c.getString(c.getColumnIndex("filename"));
 		
 		switch (item.getItemId()) {
 		case R.id.menu_reset_progress:
@@ -216,9 +228,32 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 
-	public Cursor createCursor() {
-		return m_activity.getReadableDb().query("comics_cache", null, "path = ?",
-				new String[] { m_baseDirectory }, null, null, "filename");
+	private Cursor createCursor() {
+		String baseDir = m_baseDirectory.length() == 0 ? m_prefs.getString("comics_directory", "") : m_baseDirectory;
+		
+		String selection;
+		String selectionArgs[];
+		
+		switch (m_mode) {
+		case MODE_READ:
+			selection = "path = ? AND position = size - 1";
+			selectionArgs = new String[] { baseDir };
+			break;
+		case MODE_UNFINISHED:
+			selection = "path = ? AND position < size AND position > 0";
+			selectionArgs = new String[] { baseDir };
+			break;
+		case MODE_UNREAD:
+			selection = "path = ? AND position = 0 AND size != ?";
+			selectionArgs = new String[] { baseDir, String.valueOf(SIZE_DIR) };
+			break;
+		default:
+			selection = "path = ?";
+			selectionArgs = new String[] { baseDir };
+		}
+		
+		return m_activity.getReadableDb().query("comics_cache", null, selection,
+				selectionArgs, null, null, "size != " + SIZE_DIR + ", filename, size = " + SIZE_DIR + ", filename");
 	}
 	
 	@Override
@@ -246,20 +281,19 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		    	String comicsDir = params[0];
 
 		    	File dir = new File(comicsDir);
-		    		
-	    		m_files.clear();
-	    		
+
+    			int fileIndex = 0;
+
 	    		if (dir.isDirectory()) {
 	    			File archives[] = dir.listFiles();
-	    			int fileIndex = 0;
 	    			
 	    			java.util.Arrays.sort(archives);
 	    			
 	    			for (File archive : archives) {
 	    				String filePath = archive.getAbsolutePath();
 	    				
-	    				if (archive.isDirectory() && m_mode == 0) {
-	    					m_files.add(filePath);
+	    				if (archive.isDirectory()) {
+	    					m_activity.setSize(filePath, SIZE_DIR);
 	    					
 	    				} else if (archive.getName().toLowerCase().matches(".*\\.(cbz|zip)") && isAdded() && m_activity != null && 
 	    						m_activity.getWritableDb() != null && m_activity.getWritableDb().isOpen()) {
@@ -300,33 +334,12 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 										m_activity.setSize(filePath, size);
 									}
 	    						}
-									
-								int lastPos = m_activity.getLastPosition(filePath); 
-								
-								switch (m_mode) {
-								case 0:
-									m_files.add(filePath);
-									break;
-								case 1:
-									if (lastPos == 0) {
-										m_files.add(filePath);
-									}
-									break;
-								case 2:
-									if (lastPos > 0 && lastPos != size - 1) {
-										m_files.add(filePath);
-									}
-									break;
-								case 3:
-									if (lastPos == size - 1) {
-										m_files.add(filePath);
-									}
-									break;								
-								}
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
-							}	
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
 	    				}
 	    				
 	    				++fileIndex;
@@ -337,14 +350,16 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				
 	    		if (isAdded() && m_activity != null) {
 	    			m_activity.cleanupCache(false);
+	    			m_activity.cleanupSqliteCache(comicsDir);
 	    		}
 	    		
-				return m_files.size();
+				return fileIndex; //m_files.size();
 			}
 			
 			@Override
 			protected void onPostExecute(Integer result) {
 				if (isAdded() && m_adapter != null) {
+					m_adapter.changeCursor(createCursor());
 					m_adapter.notifyDataSetChanged();
 				}
 			}
@@ -361,17 +376,22 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
     public void onResume() {
     	super.onResume();
    	
-    	if (m_files.size() == 0) {
+    	m_adapter.notifyDataSetChanged();
+    	
+    	String comicsDir = m_prefs.getString("comics_directory", "");
+    	
+    	if (m_activity.getCachedItemCount(m_baseDirectory.length() > 0 ? m_baseDirectory : comicsDir) != 0) {
     		rescan(false);
     	} else {
     		m_adapter.notifyDataSetChanged();
-    	}
+    	} 
     }
 	
 	public void onItemClick(AdapterView<?> av, View view, int position, long id) {
-		Log.d(TAG, "onItemClick position=" + position);
+		//Log.d(TAG, "onItemClick position=" + position);
 		
-		String fileName = m_adapter.getItem(position);
+		Cursor c = (Cursor) m_adapter.getItem(position);
+		String fileName = c.getString(c.getColumnIndex("path")) + "/" + c.getString(c.getColumnIndex("filename"));
 		
 		if (fileName != null) {
 			m_activity.onComicArchiveSelected(fileName);
@@ -384,7 +404,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		super.onSaveInstanceState(out);
 
 		out.putInt("mode", m_mode);
-		out.putStringArrayList("files", m_files);
+		//out.putStringArrayList("files", m_files);
 	}
 	
 }

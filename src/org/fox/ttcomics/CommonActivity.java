@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Display;
@@ -211,6 +212,26 @@ public class CommonActivity extends FragmentActivity {
 			stmt.close();
 		}	
 	}
+
+	public String getChecksum(String fileName) { 
+		String checksum = null;
+		
+		File file = new File(fileName);
+		
+		Cursor c = getReadableDb().query("comics_cache", new String[] { "checksum" },
+				"filename = ? AND path = ?",
+				new String[] { file.getName(), file.getParentFile().getAbsolutePath() }, null, null, null);
+
+		if (c.moveToFirst()) {
+			checksum = c.getString(c.getColumnIndex("checksum"));
+		}
+
+		c.close();
+		
+		return checksum;
+
+	}
+
 	
 	public int getLastPosition(String fileName) { 
 		int position = 0;
@@ -231,6 +252,18 @@ public class CommonActivity extends FragmentActivity {
 
 	}
 
+	public int getCachedItemCount(String baseDir) {
+		Cursor c = getReadableDb().query("comics_cache", new String[] { "COUNT(*)" },
+				"path = ?",
+				new String[] { baseDir }, null, null, null);
+		
+		c.moveToFirst();
+		int count = c.getInt(0);
+		c.close();
+		
+		return count;
+	}
+	
 	public int getMaxPosition(String fileName) { 
 		int position = 0;
 		
@@ -264,7 +297,7 @@ public class CommonActivity extends FragmentActivity {
 
 		c.close();
 		
-		Log.d(TAG, "getSize:" + fileName + "=" + size);
+		//Log.d(TAG, "getSize:" + fileName + "=" + size);
 		
 		return size;
 	}
@@ -451,6 +484,32 @@ public class CommonActivity extends FragmentActivity {
 		if (frag != null && frag.isAdded() && frag.getPosition() < frag.getCount()-1 && frag.isPagingEnabled()) {
 			frag.setCurrentItem(frag.getPosition() + 1);
 		}		
+		
+		
+	}
+
+	public void cleanupSqliteCache(String baseDir) {
+		Cursor c = getReadableDb().query("comics_cache", null,
+				null, null, null, null, null);
+		
+		if (c.moveToFirst()) {
+			while (!c.isAfterLast()) {
+				int id = c.getInt(c.getColumnIndex(BaseColumns._ID));
+				String fileName = c.getString(c.getColumnIndex("path")) + "/" + c.getString(c.getColumnIndex("filename"));
+
+				File file = new File(fileName);
+
+				if (!file.exists()) {
+					SQLiteStatement stmt = getWritableDb().compileStatement("DELETE FROM comics_cache WHERE " + BaseColumns._ID + " = ?");
+					stmt.bindLong(1, id);
+					stmt.execute();
+				}
+
+				c.moveToNext();
+			}
+		}
+		
+		c.close();
 		
 		
 	}
