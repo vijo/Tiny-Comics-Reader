@@ -261,6 +261,8 @@ public class CommonActivity extends FragmentActivity {
 		int count = c.getInt(0);
 		c.close();
 		
+		//Log.d(TAG, "getCachedItemCount:" + baseDir + "=" + count);
+		
 		return count;
 	}
 	

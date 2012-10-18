@@ -240,7 +240,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			selectionArgs = new String[] { baseDir };
 			break;
 		case MODE_UNFINISHED:
-			selection = "path = ? AND position < size AND position > 0";
+			selection = "path = ? AND position < size AND position > 0 AND position != size - 1";
 			selectionArgs = new String[] { baseDir };
 			break;
 		case MODE_UNREAD:
@@ -380,7 +380,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
     	
     	String comicsDir = m_prefs.getString("comics_directory", "");
     	
-    	if (m_activity.getCachedItemCount(m_baseDirectory.length() > 0 ? m_baseDirectory : comicsDir) != 0) {
+    	if (m_activity.getCachedItemCount(m_baseDirectory.length() > 0 ? m_baseDirectory : comicsDir) == 0) {
     		rescan(false);
     	} else {
     		m_adapter.notifyDataSetChanged();
