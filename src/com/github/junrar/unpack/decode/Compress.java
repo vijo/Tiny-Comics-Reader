@@ -25,7 +25,7 @@ package com.github.junrar.unpack.decode;
  */
 public class Compress {
 	public static final int CODEBUFSIZE   		= 0x4000;
-	public static final int MAXWINSIZE    		= 0x400000;
+	public static final int MAXWINSIZE    		= 0x100000;
 	public static final int MAXWINMASK      	= (MAXWINSIZE-1);
 
 	public static final int LOW_DIST_REP_COUNT 	= 16;
