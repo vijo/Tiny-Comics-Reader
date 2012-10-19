@@ -39,21 +39,7 @@ public class CbrComicArchive extends ComicArchive {
 		Log.d(TAG, "CbrComicArchive: " + fileName);
 		
 		m_archive = new Archive(new File(fileName));
-		
-		/* m_zipFile = new ZipFile(fileName);
 
-		Enumeration<? extends ZipEntry> e = m_zipFile.entries();
-
-		while (e.hasMoreElements()) {
-			ZipEntry ze = e.nextElement();		
-			if (!ze.isDirectory() && ze.getName().toLowerCase().matches(".*\\.(jpg|bmp|gif)$")) {
-				m_entries.add(ze);
-				m_count++;
-			}
-		}
-		
- */
-		
 		FileHeader header = m_archive.nextFileHeader();
 		
 		while (header != null) {
