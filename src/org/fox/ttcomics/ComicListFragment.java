@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import com.github.junrar.exception.RarException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -302,15 +304,19 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 	    						
 	    						if (size == -1 || fullRescan) {
 	    						
-									ComicArchive cba;
+									ComicArchive cba = null;
 									
 									if (archive.getName().toLowerCase().matches(".*\\.(cbz|zip)")) {									
 										cba = new CbzComicArchive(filePath);
 									} else {
-										cba = new CbrComicArchive(filePath);
+										try {
+											cba = new CbrComicArchive(filePath);
+										} catch (RarException e) {
+											e.printStackTrace();											
+										}
 									}
 									
-									if (cba.getCount() > 0) {
+									if (cba != null && cba.getCount() > 0) {
 										// Get cover
 										
 										try {

@@ -2,6 +2,8 @@ package org.fox.ttcomics;
 
 import java.io.IOException;
 
+import com.github.junrar.exception.RarException;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -99,7 +101,11 @@ public class ComicPager extends Fragment {
 		}
 		
 		try {
-			m_archive = new CbzComicArchive(m_fileName);
+			if (m_fileName.toLowerCase().matches(".*\\.(cbz|zip)")) {									
+				m_archive = new CbzComicArchive(m_fileName);
+			} else {
+				m_archive = new CbrComicArchive(m_fileName);
+			}
 			
 			int position = m_activity.getLastPosition(m_fileName);
 			
@@ -110,6 +116,9 @@ public class ComicPager extends Fragment {
 			m_activity.setProgress(Math.round(((float)position / (float)(m_archive.getCount()-1)) * 10000));
 			
 		} catch (IOException e) {
+			m_activity.toast(R.string.error_could_not_open_comic_archive);
+			e.printStackTrace();
+		} catch (RarException e) {
 			m_activity.toast(R.string.error_could_not_open_comic_archive);
 			e.printStackTrace();
 		}
