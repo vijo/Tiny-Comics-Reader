@@ -56,9 +56,6 @@ public class ComicFragment extends Fragment {
 			}
 			e.printStackTrace();
 		} catch (IOException e) {
-			if (activity != null) {
-				activity.toast(R.string.error_loading_image);
-			}
 			e.printStackTrace();
 		}
 		
@@ -93,8 +90,14 @@ public class ComicFragment extends Fragment {
 				
 				@Override
 				protected void onPostExecute(Bitmap result) {
-					if (getActivity() != null && isAdded() && result != null) {
-						image.setImageBitmap(result);
+					CommonActivity activity = (CommonActivity) getActivity();
+					
+					if (activity != null && isAdded()) {
+						if (result != null) {
+							image.setImageBitmap(result);
+						} else {							
+							activity.toast(R.string.error_loading_image);
+						}
 					}					
 				}
 			};
