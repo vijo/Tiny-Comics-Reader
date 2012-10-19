@@ -295,14 +295,20 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 	    				if (archive.isDirectory()) {
 	    					m_activity.setSize(filePath, SIZE_DIR);
 	    					
-	    				} else if (archive.getName().toLowerCase().matches(".*\\.(cbz|zip)") && isAdded() && m_activity != null && 
+	    				} else if (archive.getName().toLowerCase().matches(".*\\.(cbz|zip|cbr|rar)") && isAdded() && m_activity != null && 
 	    						m_activity.getWritableDb() != null && m_activity.getWritableDb().isOpen()) {
 	    					try {
 	    						int size = m_activity.getSize(filePath);
 	    						
 	    						if (size == -1 || fullRescan) {
 	    						
-									CbzComicArchive cba = new CbzComicArchive(filePath);
+									ComicArchive cba;
+									
+									if (archive.getName().toLowerCase().matches(".*\\.(cbz|zip)")) {									
+										cba = new CbzComicArchive(filePath);
+									} else {
+										cba = new CbrComicArchive(filePath);
+									}
 									
 									if (cba.getCount() > 0) {
 										// Get cover
@@ -313,16 +319,18 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 											if (m_activity.isStorageWritable() && (!thumbnailFile.exists() || fullRescan)) {
 												InputStream is = cba.getItem(0);
 
-												FileOutputStream fos = new FileOutputStream(thumbnailFile);							
-												
-												byte[] buffer = new byte[1024];
-												int len = 0;
-												while ((len = is.read(buffer)) != -1) {
-												    fos.write(buffer, 0, len);
+												if (is != null) {
+													FileOutputStream fos = new FileOutputStream(thumbnailFile);							
+													
+													byte[] buffer = new byte[1024];
+													int len = 0;
+													while ((len = is.read(buffer)) != -1) {
+													    fos.write(buffer, 0, len);
+													}
+													
+													fos.close();
+													is.close();
 												}
-												
-												fos.close();
-												is.close();
 											}
 
 										} catch (IOException e) {
