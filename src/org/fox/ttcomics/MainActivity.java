@@ -222,6 +222,9 @@ public class MainActivity extends CommonActivity {
 	    		m_syncClient.setPosition(sha1(new File(m_fileName).getName()), getLastPosition(m_fileName));
 	    	}
 	    }
+	    
+	    System.gc();
+	    
 	    super.onActivityResult(requestCode, resultCode, intent);
 	}
 	

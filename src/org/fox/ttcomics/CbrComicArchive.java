@@ -32,6 +32,9 @@ public class CbrComicArchive extends ComicArchive {
 		} catch (RarException e) {
 			e.printStackTrace();
 			return null;
+		} catch (OutOfMemoryError e) {
+			e.printStackTrace();
+			return null;
 		}
 	}
 	
