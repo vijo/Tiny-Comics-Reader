@@ -51,6 +51,7 @@ public class CommonActivity extends FragmentActivity {
     	m_prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     	
     	initDatabase();
+    	initSync();
 	}
 	
 	@Override
@@ -70,6 +71,10 @@ public class CommonActivity extends FragmentActivity {
 			m_storageWritable = false;
 		}
 		
+		initSync();		
+	}
+	
+	private void initSync() {
     	if (m_prefs.getBoolean("use_position_sync", false)) {
         	String googleAccount = getGoogleAccount();
         	
@@ -87,6 +92,8 @@ public class CommonActivity extends FragmentActivity {
 	    			editor.commit();
 	    		}
 	    	}
+    	} else {
+    		m_syncClient.setOwner(null);
     	}
 	}
 	
