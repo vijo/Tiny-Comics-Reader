@@ -36,8 +36,6 @@ public class CbrComicArchive extends ComicArchive {
 	}
 	
 	public CbrComicArchive(String fileName) throws IOException, RarException {
-		Log.d(TAG, "CbrComicArchive: " + fileName);
-		
 		m_archive = new Archive(new File(fileName));
 
 		FileHeader header = m_archive.nextFileHeader();
