@@ -116,29 +116,20 @@ public class ComicFragment extends Fragment {
 			}); 
 
 			image.setOnTouchListener(new View.OnTouchListener() {
-				int m_x;
-				int m_y;
-
 				@Override
 				public boolean onTouch(View view, MotionEvent event) {
 					switch (event.getAction()) {
-					case MotionEvent.ACTION_DOWN:
-						m_x = Math.round(event.getX());
-						m_y = Math.round(event.getY());
-						break;
 					case MotionEvent.ACTION_UP:
 						int x = Math.round(event.getX());
-						int y = Math.round(event.getY());
+						//int y = Math.round(event.getY());
 						
-						if (x == m_x && y == m_y) {
-							int width = view.getWidth();
+						int width = view.getWidth();
 							
-							if (x <= width/6) {
-								onLeftSideTapped();
-							} else if (x >= width-(width/6)) {
-								onRightSideTapped();
-							}
-						}						
+						if (x <= width/6) {
+							onLeftSideTapped();
+						} else if (x >= width-(width/6)) {
+							onRightSideTapped();
+						}
 						break;
 					}					
 					return false;
