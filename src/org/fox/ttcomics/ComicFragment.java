@@ -125,9 +125,9 @@ public class ComicFragment extends Fragment {
 						
 						int width = view.getWidth();
 							
-						if (x <= width/6) {
+						if (x <= width/10) {
 							onLeftSideTapped();
-						} else if (x >= width-(width/6)) {
+						} else if (x >= width-(width/10)) {
 							onRightSideTapped();
 						}
 						break;
