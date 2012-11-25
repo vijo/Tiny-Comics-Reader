@@ -8,6 +8,7 @@ import java.util.Date;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -87,6 +88,16 @@ public class ViewComicActivity extends CommonActivity {
 	@Override
 	public void onComicSelected(String fileName, int position) {
 		super.onComicSelected(fileName, position);
+	}
+	
+	public void onPause() {
+		super.onPause();
+		
+		// upload progress
+		if (m_prefs.getBoolean("use_position_sync", false) && m_syncClient.hasOwner()) {
+    		toast(R.string.sync_uploading);
+    		m_syncClient.setPosition(sha1(new File(m_fileName).getName()), getLastPosition(m_fileName));
+    	}
 	}
 	
 	private void shareComic() {
