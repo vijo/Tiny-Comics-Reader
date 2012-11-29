@@ -254,6 +254,10 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			selectionArgs = new String[] { baseDir };
 		}
 		
+		if (!m_prefs.getBoolean("enable_rar", false)) {
+			selection += " AND (UPPER(filename) NOT LIKE '%.CBR' AND UPPER(filename) NOT LIKE '%.RAR')";
+		}
+		
 		return m_activity.getReadableDb().query("comics_cache", null, selection,
 				selectionArgs, null, null, "size != " + SIZE_DIR + ", filename, size = " + SIZE_DIR + ", filename");
 	}

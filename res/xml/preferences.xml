@@ -7,6 +7,13 @@
             android:hint="@string/comics_directory_default"
             android:title="@string/prefs_comics_directory" >
         </Preference>
+        
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_rar"
+            android:title="@string/prefs_enable_rar_archives"
+            android:summary="@string/prefs_enable_rar_summary" />
+        
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/prefs_sync" >    
         <CheckBoxPreference

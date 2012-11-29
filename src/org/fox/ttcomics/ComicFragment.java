@@ -46,7 +46,12 @@ public class ComicFragment extends Fragment {
 		    options.inJustDecodeBounds = true;
 		    BitmapFactory.decodeStream(archive.getItem(page), null, options);
 
-	    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
+		    if (CommonActivity.isCompatMode()) {
+		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
+		    } else {		    
+		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 1024, 1024);
+		    }
+		    
 		    options.inJustDecodeBounds = false;
 		    
 			return BitmapFactory.decodeStream(archive.getItem(page), null, options);

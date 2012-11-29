@@ -408,13 +408,21 @@ public class CommonActivity extends FragmentActivity {
 	}
 	
 	public void toast(int msgId) {
-		Toast toast = Toast.makeText(CommonActivity.this, msgId, Toast.LENGTH_SHORT);
-		toast.show();
+		try {
+			Toast toast = Toast.makeText(CommonActivity.this, msgId, Toast.LENGTH_SHORT);
+			toast.show();
+		} catch (RuntimeException e) {
+			// might happen if UI lags 
+		}
 	}
 
 	public void toast(String msg) {
-		Toast toast = Toast.makeText(CommonActivity.this, msg, Toast.LENGTH_SHORT);
-		toast.show();
+		try {
+			Toast toast = Toast.makeText(CommonActivity.this, msg, Toast.LENGTH_SHORT);
+			toast.show();
+		} catch (RuntimeException e) {
+			// might happen if UI lags
+		}
 	}
 
 	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {

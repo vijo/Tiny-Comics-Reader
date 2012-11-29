@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">Tiny Comics Reader</string>
+    <string name="app_name">Pow! Comics Reader</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Preferences</string>
     <string name="menu_go_location">Go to</string>
@@ -52,4 +52,6 @@
     <string name="prefs_clear_sync_data">Clear sync data</string>
     <string name="prefs_clear_sync_data_summary">Removes all remotely stored sync data</string>
     <string name="open_parent">Open parent</string>
+    <string name="prefs_enable_rar_archives">Enable RAR archives</string>
+    <string name="prefs_enable_rar_summary">Using RAR (CBR) files is not recommended because of underlying RAR library issues. Enable at your own risk.</string>
 </resources>
