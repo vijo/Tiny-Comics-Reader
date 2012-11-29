@@ -4,7 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Preferences</string>
     <string name="menu_go_location">Go to</string>
-    <string name="title_activity_main">Tiny Comics Reader</string>
+    <string name="title_activity_main">Pow! Comics Reader</string>
     <string name="title_activity_preferences">Preferences</string>
     <string name="prefs_comics_directory">Comics directory</string>
     <string name="prefs_general">General</string>
