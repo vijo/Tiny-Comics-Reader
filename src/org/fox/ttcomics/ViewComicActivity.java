@@ -110,7 +110,7 @@ public class ViewComicActivity extends CommonActivity {
 		
 		// upload progress
 		if (m_prefs.getBoolean("use_position_sync", false) && m_syncClient.hasOwner()) {
-    		toast(R.string.sync_uploading);
+    		//toast(R.string.sync_uploading);
     		m_syncClient.setPosition(sha1(new File(m_fileName).getName()), getLastPosition(m_fileName));
     	}
 	}

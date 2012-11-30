@@ -102,6 +102,7 @@ public class ComicFragment extends Fragment {
 							image.setImageBitmap(result);
 						} else {							
 							activity.toast(R.string.error_loading_image);
+							image.setImageResource(R.drawable.badimage);
 						}
 					}					
 				}
