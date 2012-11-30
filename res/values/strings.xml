@@ -2,10 +2,10 @@
 
     <string name="app_name">Pow! Comics Reader</string>
     <string name="hello_world">Hello world!</string>
-    <string name="menu_settings">Preferences</string>
+    <string name="menu_settings">Settings</string>
     <string name="menu_go_location">Go to</string>
     <string name="title_activity_main">Pow! Comics Reader</string>
-    <string name="title_activity_preferences">Preferences</string>
+    <string name="title_activity_preferences">Settings</string>
     <string name="prefs_comics_directory">Comics directory</string>
     <string name="prefs_general">General</string>
     <string name="prefs_dim_status_bar">Dim status bar</string>
@@ -15,7 +15,7 @@
     <string name="tab_unread">Unread</string>
     <string name="tab_read">Read</string>
     <string name="dialog_need_prefs_message">Please configure base directory for comics archives.</string>
-    <string name="dialog_need_prefs_preferences">Preferences</string>
+    <string name="dialog_need_prefs_preferences">Settings</string>
     <string name="cancel">Cancel</string>
     <string name="comics_directory_default">/mnt/sdcard/Comics</string>
     <string name="prefs_reading">Reading</string>
@@ -54,4 +54,5 @@
     <string name="open_parent">Open parent</string>
     <string name="prefs_enable_rar_archives">Enable RAR archives</string>
     <string name="prefs_enable_rar_summary">Using RAR (CBR) files is not recommended because of underlying RAR library issues. Enable at your own risk.</string>
+    <string name="menu_toggle_orientation_lock">(Un)lock orientation</string>
 </resources>

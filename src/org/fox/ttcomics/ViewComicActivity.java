@@ -12,6 +12,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,6 +35,7 @@ public class ViewComicActivity extends CommonActivity {
 	private String m_fileName;
 	private String m_tmpFileName;
 	private boolean m_fullScreen = false;
+	private boolean m_orientationLocked = false;
 	
     @SuppressLint("NewApi")
 	@Override
@@ -54,8 +57,11 @@ public class ViewComicActivity extends CommonActivity {
         } else {
         	m_fileName = savedInstanceState.getString("fileName");
         	m_tmpFileName = savedInstanceState.getString("tmpFileName");
+        	m_orientationLocked = savedInstanceState.getBoolean("orientationLocked");
         }
 
+        setOrientationLock(m_orientationLocked);
+        
         if (!isCompatMode()) {
         	getActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -91,6 +97,7 @@ public class ViewComicActivity extends CommonActivity {
 
 		out.putString("fileName", m_fileName);
 		out.putString("tmpFileName", m_tmpFileName);
+		out.putBoolean("orientationLocked", m_orientationLocked);
 	}
 	
 	@Override
@@ -162,10 +169,30 @@ public class ViewComicActivity extends CommonActivity {
 	    super.onActivityResult(requestCode, resultCode, intent);
 	}
 	
+	private void setOrientationLock(boolean locked) {
+		if (locked) {
+			int currentOrientation = getResources().getConfiguration().orientation;
+			
+			if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+			   setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+			}
+			else {
+			   setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+			}
+		} else {
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+		}
+		
+		m_orientationLocked = locked;
+	}
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.menu_share:
 			shareComic();			
+			return true;
+		case R.id.menu_toggle_orientation_lock:
+			setOrientationLock(!m_orientationLocked);			
 			return true;			
 		case R.id.menu_sync_location:
 	        m_syncClient.getPosition(sha1(new File(m_fileName).getName()), new SyncClient.PositionReceivedListener() {
