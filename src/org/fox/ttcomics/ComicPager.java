@@ -164,17 +164,5 @@ public class ComicPager extends Fragment {
 
 		out.putString("fileName", m_fileName);
 	}
-
-	public boolean isPagingEnabled() {
-
-		ViewPager pager = (ViewPager) getView().findViewById(R.id.comics_pager);
-		
-		if (pager != null) {
-			return pager.isPagingEnabled();
-		}
-		
-		return false;
-	}
-	
 	
 }

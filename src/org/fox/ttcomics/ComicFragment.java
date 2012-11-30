@@ -111,12 +111,12 @@ public class ComicFragment extends Fragment {
 			
 			image.setOnScaleChangedListener(new ImageViewTouch.OnScaleChangedListener() {
 				@Override
-				public void onScaleChanged(float scale, boolean widthFits) {
-					ViewPager pager = (ViewPager) getActivity().findViewById(R.id.comics_pager);
+				public void onScaleChanged(float scale) {
+					/* ViewPager pager = (ViewPager) getActivity().findViewById(R.id.comics_pager);
 					
 					if (pager != null) {
 						pager.setPagingEnabled(widthFits);
-					}
+					} */
 				}
 			}); 
 
@@ -154,11 +154,33 @@ public class ComicFragment extends Fragment {
 	}
 	
 	private void onLeftSideTapped() {
-		m_activity.selectPreviousComic();
+		ImageViewTouch image = (ImageViewTouch) getView().findViewById(R.id.comic_image);
+		
+		if (image != null) {
+			boolean atLeftEdge = !image.canScroll(1);
+			
+			if (atLeftEdge) {
+				m_activity.selectPreviousComic();
+			}
+		}
 	}
-
+	
+	public boolean canScroll(int direction) {
+		ImageViewTouch image = (ImageViewTouch) getView().findViewById(R.id.comic_image);
+		
+		return image.canScroll(direction);
+	}
+	
 	private void onRightSideTapped() {
-		m_activity.selectNextComic();
+		ImageViewTouch image = (ImageViewTouch) getView().findViewById(R.id.comic_image);
+		
+		if (image != null) {
+			boolean atRightEdge = !image.canScroll(-1);
+			
+			if (atRightEdge) {
+				m_activity.selectNextComic();
+			}
+		}
 	}
 
 	@Override
