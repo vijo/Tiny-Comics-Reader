@@ -7,7 +7,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
@@ -34,7 +33,7 @@ public class ImageViewTouch extends ImageViewTouchBase {
     private OnImageViewTouchDoubleTapListener doubleTapListener;
 
     public interface OnScaleChangedListener {
-		public void onScaleChanged(float scale, boolean widthFits);
+		public void onScaleChanged(float scale);
 	}
     
     protected OnScaleChangedListener mScaleChangedListener;
@@ -121,8 +120,7 @@ public class ImageViewTouch extends ImageViewTouchBase {
 		if ( !mScaleDetector.isInProgress() ) mCurrentScaleFactor = scale;
 		
 		if (mScaleChangedListener != null) {
-			RectF bitmapRect = getBitmapRect();			
-			mScaleChangedListener.onScaleChanged(mCurrentScaleFactor, getWidth() >= (bitmapRect.right - bitmapRect.left));
+			mScaleChangedListener.onScaleChanged(mCurrentScaleFactor);
 		}
 	}
 

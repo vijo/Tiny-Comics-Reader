@@ -7,7 +7,7 @@
     <item android:id="@+id/menu_go_location"
         android:title="@string/menu_go_location"
         android:showAsAction="never" />
-
+    
     <item android:id="@+id/menu_sync_location"
         android:title="@string/menu_sync_location"
         android:showAsAction="never" />
@@ -16,5 +16,9 @@
         android:title="@string/menu_share"
         android:icon="@android:drawable/ic_menu_share"
         android:showAsAction="ifRoom" />
+
+    <item android:id="@+id/menu_toggle_orientation_lock"
+        android:title="@string/menu_toggle_orientation_lock"
+        android:showAsAction="never" />
     
 </menu>
