@@ -7,7 +7,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="96"
@@ -16,9 +15,9 @@
    version="1.1"
    inkscape:version="0.48.1 "
    sodipodi:docname="s_launcher.svg"
-   inkscape:export-filename="C:\Users\fox\workspace\org.fox.ttcomics\res\drawable-xhdpi\ic_launcher.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-filename="C:\Users\fox\workspace\org.fox.ttcomics\res\drawable-hdpi\ic_launcher.png"
+   inkscape:export-xdpi="67.5"
+   inkscape:export-ydpi="67.5">
   <defs
      id="defs4">
     <linearGradient
@@ -32,15 +31,6 @@
          offset="1"
          id="stop3803" />
     </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3799"
-       id="linearGradient3807"
-       x1="5.2397361"
-       y1="15.01097"
-       x2="58.038109"
-       y2="68.578064"
-       gradientUnits="userSpaceOnUse" />
     <filter
        id="filter3007"
        inkscape:label="Drop shadow"
@@ -74,6 +64,40 @@
            in="SourceGraphic" />
       </feMerge>
     </filter>
+    <filter
+       id="filter4167"
+       inkscape:label="Colorize"
+       inkscape:menu="Color"
+       inkscape:menu-tooltip="Blend image or object with a flood color and set lightness and contrast"
+       x="0"
+       y="0"
+       width="1"
+       height="1"
+       color-interpolation-filters="sRGB">
+      <feColorMatrix
+         id="feColorMatrix4169"
+         values="1"
+         in="SourceGraphic"
+         type="saturate"
+         result="result2" />
+      <feFlood
+         id="feFlood4171"
+         flood-color="rgb(254,102,0)"
+         flood-opacity="1"
+         result="result1" />
+      <feBlend
+         id="feBlend4173"
+         in2="result2"
+         mode="multiply"
+         in="result1"
+         result="result3" />
+      <feComposite
+         id="feComposite4175"
+         in2="SourceGraphic"
+         operator="in"
+         k2="1"
+         result="result4" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -82,9 +106,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="6.0048085"
-     inkscape:cy="49.885154"
+     inkscape:zoom="5.6"
+     inkscape:cx="28.826177"
+     inkscape:cy="53.814876"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -95,7 +119,8 @@
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:snap-nodes="false">
+     inkscape:snap-nodes="false"
+     inkscape:snap-global="false">
     <sodipodi:guide
        orientation="1,0"
        position="7.5761441,54.043161"
@@ -132,34 +157,48 @@
      transform="translate(0,-956.36218)">
     <path
        sodipodi:type="star"
-       style="fill:url(#linearGradient3807);fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:0.99179322000000003;stroke-miterlimit:4;stroke-dasharray:none;filter:url(#filter3007)"
-       id="path3001"
-       sodipodi:sides="5"
-       sodipodi:cx="32.072342"
-       sodipodi:cy="37.916229"
-       sodipodi:r1="41.68792"
-       sodipodi:r2="20.84396"
-       sodipodi:arg1="0.67379487"
-       sodipodi:arg2="1.3021134"
+       style="fill:#ff6600;fill-opacity:1;stroke:#000000;stroke-width:1.12887480999999990;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path3031"
+       sodipodi:sides="9"
+       sodipodi:cx="27.779196"
+       sodipodi:cy="34.633232"
+       sodipodi:r1="50.953285"
+       sodipodi:r2="29.552904"
+       sodipodi:arg1="0.49024887"
+       sodipodi:arg2="0.83931472"
        inkscape:flatsided="false"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="M 64.649761,63.927657 37.605618,58.012336 17.40098,76.93717 14.669685,49.388726 -9.5724778,36.021069 15.783632,24.910515 21.00579,-2.2759847 39.408023,18.405759 66.877656,14.971236 52.894752,38.86381 z"
-       transform="matrix(1.0570577,0,0,0.961743,17.694805,967.96916)"
-       inkscape:transform-center-x="3.614876"
-       inkscape:transform-center-y="-0.56322977" />
+       d="M 72.730984,58.624355 47.519737,56.626076 46.793067,81.905951 28.7646,64.169703 11.958348,83.068117 9.5483813,57.892887 -15.47362,61.567061 -1.1374363,40.73262 -22.667116,27.463368 1.7071596,20.718381 -6.2562209,-3.2854663 16.751151,7.2150562 26.080224,-16.29172 36.955287,6.5410003 59.211636,-5.4696229 52.865828,19.011612 77.63546,24.117046 57.038055,38.791753 z"
+       transform="matrix(0.85565363,-0.2292717,0.2292717,0.85565363,16.712595,980.15403)" />
+    <path
+       sodipodi:type="star"
+       style="fill:#d40000;fill-opacity:1;stroke:#000000;stroke-width:1.61221886;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path3031-4"
+       sodipodi:sides="9"
+       sodipodi:cx="27.779196"
+       sodipodi:cy="34.633232"
+       sodipodi:r1="50.953285"
+       sodipodi:r2="29.552904"
+       sodipodi:arg1="0.49024887"
+       sodipodi:arg2="0.83931472"
+       inkscape:flatsided="false"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 72.730984,58.624355 47.519737,56.626076 46.793067,81.905951 28.7646,64.169703 11.958348,83.068117 9.5483813,57.892887 -15.47362,61.567061 -1.1374363,40.73262 -22.667116,27.463368 1.7071596,20.718381 -6.2562209,-3.2854663 16.751151,7.2150562 26.080224,-16.29172 36.955287,6.5410003 59.211636,-5.4696229 52.865828,19.011612 77.63546,24.117046 57.038055,38.791753 z"
+       transform="matrix(0.58890595,-0.15779687,0.15779687,0.58890595,26.466358,987.70085)" />
     <text
        xml:space="preserve"
-       style="font-size:47.85824965999999800px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#d33a3a;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Sans"
-       x="-336.80869"
-       y="890.67273"
-       id="text3809"
-       sodipodi:linespacing="125%"
-       transform="matrix(0.85627459,-0.40467199,0.34482532,1.0048866,0,0)"><tspan
+       style="font-size:36.53679657000000000px;font-style:normal;font-weight:normal;line-height:126.99999808999999000%;letter-spacing:0px;word-spacing:0px;fill:#ffe680;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Sans"
+       x="-128.74614"
+       y="1014.6334"
+       id="text3801"
+       sodipodi:linespacing="127%"
+       transform="matrix(0.99123282,-0.13212683,0.13212683,0.99123282,0,0)"><tspan
          sodipodi:role="line"
-         id="tspan3811"
-         x="-336.80869"
-         y="890.67273"
-         style="font-size:28.71494674999999900px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#d33a3a;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:Tahoma;-inkscape-font-specification:Tahoma Bold">POW!</tspan></text>
+         id="tspan3803"
+         x="-128.74614"
+         y="1014.6334"
+         style="font-size:28px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:126.99999808999999000%;fill:#ffe680;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:BD Cartoon Shout;-inkscape-font-specification:BD Cartoon Shout">POW!</tspan></text>
   </g>
 </svg>
