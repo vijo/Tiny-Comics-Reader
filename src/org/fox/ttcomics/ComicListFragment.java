@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
@@ -81,6 +82,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			
 			String filePath = c.getString(c.getColumnIndex("path"));
 			String fileBaseName = c.getString(c.getColumnIndex("filename"));
+			String firstChild = c.getString(c.getColumnIndex("firstchild"));
 
 			int lastPos = m_activity.getLastPosition(filePath + "/" + fileBaseName);
 			int size = m_activity.getSize(filePath + "/" + fileBaseName);
@@ -106,7 +108,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 					if (lastPos == size - 1) {
 						info.setText(getString(R.string.file_finished));
 					} else if (lastPos > 0) {
-						info.setText(getString(R.string.file_progress_info, lastPos+1, size, size/lastPos+1));						
+						info.setText(getString(R.string.file_progress_info, lastPos+1, size, (int)(lastPos/ (float)size * 100f)));						
 					} else {
 						info.setText(getString(R.string.file_unread, size));
 					}
@@ -128,7 +130,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				}
 			}
 			
-			File thumbnailFile = new File(m_activity.getCacheFileName(filePath + "/" + fileBaseName));
+			File thumbnailFile = new File(m_activity.getCacheFileName(firstChild != null ? firstChild :  filePath + "/" + fileBaseName));
 			
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
@@ -261,8 +263,9 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			selection += " AND (UPPER(filename) NOT LIKE '%.CBR' AND UPPER(filename) NOT LIKE '%.RAR')";
 		}
 		
-		return m_activity.getReadableDb().query("comics_cache", null, selection,
-				selectionArgs, null, null, "size != " + SIZE_DIR + ", filename, size = " + SIZE_DIR + ", filename");
+		return m_activity.getReadableDb().query("comics_cache", new String[] { BaseColumns._ID, "filename", "path", 
+					"(SELECT path || '/' || filename FROM comics_cache AS t2 WHERE t2.path = comics_cache.path || '/' || comics_cache.filename AND filename != '' ORDER BY filename LIMIT 1) AS firstchild" }, 
+				selection, selectionArgs, null, null, "size != " + SIZE_DIR + ", filename, size = " + SIZE_DIR + ", filename");
 	}
 	
 	@Override
