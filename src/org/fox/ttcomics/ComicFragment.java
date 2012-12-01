@@ -5,6 +5,7 @@ import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,12 +24,13 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 
-public class ComicFragment extends Fragment {
+public class ComicFragment extends Fragment implements GestureDetector.OnDoubleTapListener {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private SharedPreferences m_prefs;
 	private int m_page;
 	private CommonActivity m_activity;
+	private GestureDetector m_detector;
 	
 	public ComicFragment() {
 		super();
@@ -113,32 +116,14 @@ public class ComicFragment extends Fragment {
 			image.setOnScaleChangedListener(new ImageViewTouch.OnScaleChangedListener() {
 				@Override
 				public void onScaleChanged(float scale) {
-					/* ViewPager pager = (ViewPager) getActivity().findViewById(R.id.comics_pager);
-					
-					if (pager != null) {
-						pager.setPagingEnabled(widthFits);
-					} */
+					// TODO: shared scale change?
 				}
 			}); 
 
 			image.setOnTouchListener(new View.OnTouchListener() {
 				@Override
 				public boolean onTouch(View view, MotionEvent event) {
-					switch (event.getAction()) {
-					case MotionEvent.ACTION_UP:
-						int x = Math.round(event.getX());
-						//int y = Math.round(event.getY());
-						
-						int width = view.getWidth();
-							
-						if (x <= width/10) {
-							onLeftSideTapped();
-						} else if (x >= width-(width/10)) {
-							onRightSideTapped();
-						}
-						break;
-					}					
-					return false;
+					return m_detector.onTouchEvent(event);
 				}
 			}); 
 			
@@ -169,7 +154,11 @@ public class ComicFragment extends Fragment {
 	public boolean canScroll(int direction) {
 		ImageViewTouch image = (ImageViewTouch) getView().findViewById(R.id.comic_image);
 		
-		return image.canScroll(direction);
+		if (image != null) {
+			return image.canScroll(direction);
+		} else {
+			return false;
+		}
 	}
 	
 	private void onRightSideTapped() {
@@ -190,6 +179,49 @@ public class ComicFragment extends Fragment {
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
 		m_activity = (CommonActivity) activity;
+		
+		m_detector = new GestureDetector(m_activity, new GestureDetector.OnGestureListener() {
+			
+			@Override
+			public boolean onSingleTapUp(MotionEvent e) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void onShowPress(MotionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+					float distanceY) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void onLongPress(MotionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+					float velocityY) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public boolean onDown(MotionEvent e) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		});
+		
+		m_detector.setOnDoubleTapListener(this);
 	}
 	
 	@Override
@@ -197,5 +229,40 @@ public class ComicFragment extends Fragment {
 		super.onSaveInstanceState(out);
 		out.putInt("page", m_page);
 	}
-	
+
+	@Override
+	public boolean onDoubleTap(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onDoubleTapEvent(MotionEvent e) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onSingleTapConfirmed(MotionEvent e) {
+		
+		int width = getView().getWidth();
+		
+		int x = Math.round(e.getX());
+		
+		if (x <= width/10) {
+			onLeftSideTapped();
+		} else if (x >= width-(width/10)) {
+			onRightSideTapped();
+		} else if (!CommonActivity.isCompatMode()) {
+			ActionBar bar = m_activity.getActionBar();
+			
+			if (bar.isShowing()) {
+				bar.hide();
+			} else {
+				bar.show();
+			}
+		}
+
+		return false;
+	}
 }

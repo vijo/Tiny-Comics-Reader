@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 public class CommonActivity extends FragmentActivity {
@@ -530,5 +531,4 @@ public class CommonActivity extends FragmentActivity {
 		
 		
 	}
-
 }

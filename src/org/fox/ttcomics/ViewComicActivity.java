@@ -34,7 +34,6 @@ public class ViewComicActivity extends CommonActivity {
 
 	private String m_fileName;
 	private String m_tmpFileName;
-	private boolean m_fullScreen = false;
 	private boolean m_orientationLocked = false;
 	
     @SuppressLint("NewApi")
@@ -67,13 +66,14 @@ public class ViewComicActivity extends CommonActivity {
         }
         
         setTitle(new File(m_fileName).getName());
-        
+
         if (m_prefs.getBoolean("use_full_screen", false)) {
         	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-        		WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
         	
-        	getActionBar().hide();
-        	m_fullScreen = true;
+        	if (!isCompatMode()) {
+        		getActionBar().hide();
+        	}
         }
         
     }
@@ -83,10 +83,6 @@ public class ViewComicActivity extends CommonActivity {
         getMenuInflater().inflate(R.menu.activity_view_comic, menu);
         
         menu.findItem(R.id.menu_sync_location).setVisible(m_prefs.getBoolean("use_position_sync", false) && m_syncClient.hasOwner());
-        
-        if (m_fullScreen && !isCompatMode()) {
-        	menu.findItem(R.id.menu_share).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        }
         
         return true;
     }
