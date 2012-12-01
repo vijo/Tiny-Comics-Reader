@@ -9,11 +9,11 @@
     <string name="prefs_comics_directory">Comics directory</string>
     <string name="prefs_general">General</string>
     <string name="prefs_dim_status_bar">Dim status bar</string>
-    <string name="file_progress_info">%1$d of %2$d</string>
+    <string name="file_progress_info">%1$d of %2$d (%3$d%%)</string>
     <string name="menu_rescan">Reload</string>
     <string name="tab_all_comics">All comics</string>
     <string name="tab_unread">Unread</string>
-    <string name="tab_read">Read</string>
+    <string name="tab_read">Finished</string>
     <string name="dialog_need_prefs_message">Please configure base directory for comics archives.</string>
     <string name="dialog_need_prefs_preferences">Preferences</string>
     <string name="cancel">Cancel</string>
@@ -54,4 +54,6 @@
     <string name="open_parent">Open parent</string>
     <string name="prefs_enable_rar_archives">Enable RAR archives</string>
     <string name="prefs_enable_rar_summary">Using RAR (CBR) files is not recommended because of underlying RAR library issues. Enable at your own risk.</string>
+    <string name="file_unread">Unread (%1$d pages)</string>
+    <string name="file_finished">Finished</string>
 </resources>

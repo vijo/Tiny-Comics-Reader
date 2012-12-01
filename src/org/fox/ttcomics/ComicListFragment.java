@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-
-import com.github.junrar.exception.RarException;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -31,12 +27,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.github.junrar.exception.RarException;
 
 public class ComicListFragment extends Fragment implements OnItemClickListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -106,7 +103,13 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			
 			if (info != null) {
 				if (size != -1 && size != SIZE_DIR) {
-					info.setText(getString(R.string.file_progress_info, lastPos+1, size));
+					if (lastPos == size - 1) {
+						info.setText(getString(R.string.file_finished));
+					} else if (lastPos > 0) {
+						info.setText(getString(R.string.file_progress_info, lastPos+1, size, size/lastPos+1));						
+					} else {
+						info.setText(getString(R.string.file_unread, size));
+					}
 					info.setVisibility(View.VISIBLE);
 				} else {
 					info.setVisibility(View.GONE);
