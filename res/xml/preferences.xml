@@ -5,6 +5,7 @@
         <Preference
             android:key="comics_directory"
             android:hint="@string/comics_directory_default"
+            android:summary="@string/prefs_comics_directory_summary"
             android:title="@string/prefs_comics_directory" >
         </Preference>
         
