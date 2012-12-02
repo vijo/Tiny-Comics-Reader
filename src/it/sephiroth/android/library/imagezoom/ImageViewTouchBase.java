@@ -39,7 +39,7 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 	protected final float[] mMatrixValues = new float[9];
 	protected int mThisWidth = -1, mThisHeight = -1;
 	protected boolean mFitToScreen = false;
-	final protected float MAX_ZOOM = 4.0f;
+	final protected float MAX_ZOOM = 2.0f;
 
 	protected RectF mBitmapRect = new RectF();
 	protected RectF mCenterRect = new RectF();
@@ -290,8 +290,8 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 		float w = bitmap.getIntrinsicWidth();
 		float h = bitmap.getIntrinsicHeight();
 		matrix.reset();
-		float widthScale = Math.min( viewWidth / w, MAX_ZOOM );
-		float heightScale = Math.min( viewHeight / h, MAX_ZOOM );
+		float widthScale = viewWidth / w; //Math.min( viewWidth / w, MAX_ZOOM );
+		float heightScale = viewHeight / h; //Math.min( viewHeight / h, MAX_ZOOM );
 		float scale = Math.min( widthScale, heightScale );
 		matrix.postScale( scale, scale );
 		matrix.postTranslate( ( viewWidth - w * scale ) / MAX_ZOOM, ( viewHeight - h * scale ) / MAX_ZOOM );
