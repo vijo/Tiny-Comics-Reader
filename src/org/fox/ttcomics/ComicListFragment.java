@@ -167,6 +167,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		
 		if (savedInstanceState != null) {
 			m_mode = savedInstanceState.getInt("mode");
+			m_baseDirectory = savedInstanceState.getString("baseDir");
 			//m_files = savedInstanceState.getStringArrayList("files");
 		}
 
@@ -428,6 +429,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		super.onSaveInstanceState(out);
 
 		out.putInt("mode", m_mode);
+		out.putString("baseDir", m_baseDirectory);
 		//out.putStringArrayList("files", m_files);
 	}
 	

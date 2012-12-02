@@ -150,8 +150,6 @@ public class ComicPager extends Fragment {
 				}
 				
 				ComicFragment cf = m_adapter.getFragmentAt(position);
-				
-				Log.d(TAG, "cf=" + cf);
 
 				if (cf != null) {
 					if (m_current != null) {

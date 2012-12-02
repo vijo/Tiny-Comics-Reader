@@ -3,14 +3,10 @@ package org.fox.ttcomics;
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 public class ViewPager extends android.support.v4.view.ViewPager {
-
-	private final String TAG = this.getClass().getSimpleName();
-
     public ViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
