@@ -31,6 +31,8 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 	private int m_page;
 	private CommonActivity m_activity;
 	private GestureDetector m_detector;
+	private ComicArchive m_archive;
+	private boolean m_thumbnail = true;
 	
 	public ComicFragment() {
 		super();
@@ -40,8 +42,43 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 		super();
 		m_page = page;
 	}
+
+	public void setThumbnail(final boolean thumbnail) {
+		Log.d(TAG, "setThumbnail=" + thumbnail + " isAdded=" + isAdded() + " view=" + getView());
 	
-	public Bitmap loadImage(ComicArchive archive, int page) {
+		if (isAdded() && getView() != null && m_thumbnail != thumbnail) {
+			
+			AsyncTask<ComicArchive, Void, Bitmap> loadTask = new AsyncTask<ComicArchive, Void, Bitmap>() {
+				@Override
+				protected Bitmap doInBackground(ComicArchive... params) {
+					return loadImage(params[0], m_page, thumbnail);
+				}
+				
+				@Override
+				protected void onPostExecute(Bitmap result) {
+					CommonActivity activity = (CommonActivity) getActivity();
+					
+					if (activity != null && isAdded() && getView() != null) {
+						ImageViewTouch image = (ImageViewTouch) getView().findViewById(R.id.comic_image);
+						
+						if (result != null) {
+							image.setImageBitmap(result);
+						} else {							
+							activity.toast(R.string.error_loading_image);
+							image.setImageResource(R.drawable.badimage);
+						}
+					}					
+				}
+			};
+			
+			loadTask.execute(m_archive);
+			
+		}
+		
+		m_thumbnail = thumbnail;
+	}
+	
+	private Bitmap loadImage(ComicArchive archive, int page, boolean thumbnail) {
 		CommonActivity activity = (CommonActivity) getActivity();
 		
 		try {			
@@ -49,10 +86,14 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 		    options.inJustDecodeBounds = true;
 		    BitmapFactory.decodeStream(archive.getItem(page), null, options);
 
-		    if (CommonActivity.isCompatMode()) {
-		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
-		    } else {		    
-		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 1024, 1024);
+		    if (thumbnail) {
+		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 256, 256);
+		    } else {
+			    if (CommonActivity.isCompatMode()) {
+			    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
+			    } else {		    
+			    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 1024, 1024);
+			    }		    	
 		    }
 		    
 		    options.inJustDecodeBounds = false;
@@ -81,53 +122,54 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 			m_page = savedInstanceState.getInt("page");
 		}
 		
+		if (CommonActivity.isCompatMode() && m_prefs.getBoolean("use_dark_theme", false)) {
+			image.setBackgroundColor(0xff000000);
+		}
+			
+		image.setFitToScreen(true);
+		
 		ComicPager pager = (ComicPager) getActivity().getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_COMICS_PAGER);
 		
-		if (pager != null) {
-			if (CommonActivity.isCompatMode() && m_prefs.getBoolean("use_dark_theme", false)) {
-				image.setBackgroundColor(0xff000000);
+		if (pager != null) {		
+			m_thumbnail = pager.getPosition() != m_page;
+		}
+
+		AsyncTask<ComicArchive, Void, Bitmap> loadTask = new AsyncTask<ComicArchive, Void, Bitmap>() {
+			@Override
+			protected Bitmap doInBackground(ComicArchive... params) {
+				return loadImage(params[0], m_page, m_thumbnail);
 			}
 			
-			image.setFitToScreen(true);
-			
-			AsyncTask<ComicArchive, Void, Bitmap> loadTask = new AsyncTask<ComicArchive, Void, Bitmap>() {
-				@Override
-				protected Bitmap doInBackground(ComicArchive... params) {
-					return loadImage(params[0], m_page);
-				}
+			@Override
+			protected void onPostExecute(Bitmap result) {
+				CommonActivity activity = (CommonActivity) getActivity();
 				
-				@Override
-				protected void onPostExecute(Bitmap result) {
-					CommonActivity activity = (CommonActivity) getActivity();
-					
-					if (activity != null && isAdded()) {
-						if (result != null) {
-							image.setImageBitmap(result);
-						} else {							
-							activity.toast(R.string.error_loading_image);
-							image.setImageResource(R.drawable.badimage);
-						}
-					}					
-				}
-			};
-			
-			loadTask.execute(pager.getArchive());
-			
-			image.setOnScaleChangedListener(new ImageViewTouch.OnScaleChangedListener() {
-				@Override
-				public void onScaleChanged(float scale) {
-					// TODO: shared scale change?
-				}
-			}); 
+				if (activity != null && isAdded()) {
+					if (result != null) {
+						image.setImageBitmap(result);
+					} else {							
+						activity.toast(R.string.error_loading_image);
+						image.setImageResource(R.drawable.badimage);
+					}
+				}					
+			}
+		};
+		
+		loadTask.execute(m_archive);
+		
+		image.setOnScaleChangedListener(new ImageViewTouch.OnScaleChangedListener() {
+			@Override
+			public void onScaleChanged(float scale) {
+				// TODO: shared scale change?
+			}
+		}); 
 
-			image.setOnTouchListener(new View.OnTouchListener() {
-				@Override
-				public boolean onTouch(View view, MotionEvent event) {
-					return m_detector.onTouchEvent(event);
-				}
-			}); 
-			
-		} 
+		image.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				return m_detector.onTouchEvent(event);
+			}
+		}); 
 		
 		TextView page = (TextView) view.findViewById(R.id.comic_page);
 		
@@ -179,6 +221,9 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 		
 		m_prefs = PreferenceManager.getDefaultSharedPreferences(activity.getApplicationContext());
 		m_activity = (CommonActivity) activity;
+		
+		ComicPager pager = (ComicPager) getActivity().getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_COMICS_PAGER);
+		m_archive = pager.getArchive();
 		
 		m_detector = new GestureDetector(m_activity, new GestureDetector.OnGestureListener() {
 			

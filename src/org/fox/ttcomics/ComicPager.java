@@ -1,6 +1,7 @@
 package org.fox.ttcomics;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.github.junrar.exception.RarException;
 
@@ -25,18 +26,32 @@ public class ComicPager extends Fragment {
 	private CommonActivity m_activity;
 	
 	private class PagerAdapter extends FragmentStatePagerAdapter {
+		HashMap<Integer, ComicFragment> m_fragments = new HashMap<Integer, ComicFragment>();
+		
 		public PagerAdapter(FragmentManager fm) {
 			super(fm);
 		}
-
+		
 		@Override
 		public Fragment getItem(int position) {
-			return new ComicFragment(position);
+			ComicFragment cf = new ComicFragment(position);			
+			m_fragments.put(position, cf);			
+			return cf;
 		}
-
+		
 		@Override
 		public int getCount() {
 			return m_archive.getCount();
+		}
+
+		@Override
+		public void destroyItem(View container, int position, Object object) {
+		    super.destroyItem(container, position, object);
+		    m_fragments.remove(position);
+		}		
+		
+		public ComicFragment getFragmentAt(int position) {
+			return m_fragments.get(position);
 		}
 	}
 
@@ -124,14 +139,27 @@ public class ComicPager extends Fragment {
 		}
 		
 		pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+			private ComicFragment m_current;
 			
 			public void onPageSelected(int position) {
 				m_activity.onComicSelected(m_fileName, position);
-
 				m_activity.setProgress(Math.round(((float)position / (float)(m_archive.getCount()-1)) * 10000));
 								
 				if (!CommonActivity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
 					view.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
+				}
+				
+				ComicFragment cf = m_adapter.getFragmentAt(position);
+				
+				Log.d(TAG, "cf=" + cf);
+
+				if (cf != null) {
+					if (m_current != null) {
+						m_current.setThumbnail(true);
+					}
+					
+					cf.setThumbnail(false);
+					m_current = cf;
 				}
 			}
 			
