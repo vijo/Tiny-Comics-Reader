@@ -26,12 +26,14 @@
         android:layout_weight="0"
         android:gravity="center_horizontal"
         android:orientation="vertical" >
-
+
         <TextView
             android:id="@+id/file_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:ellipsize="middle"
+            android:singleLine="true"
             android:text="Comic_1980.cbz" />
 
         <ProgressBar

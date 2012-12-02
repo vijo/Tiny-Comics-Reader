@@ -35,6 +35,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="middle"
+                android:singleLine="true"
                 android:text="Comic_1980.cbz" />
 
             <TextView
