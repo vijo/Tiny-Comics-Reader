@@ -290,8 +290,8 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 		float w = bitmap.getIntrinsicWidth();
 		float h = bitmap.getIntrinsicHeight();
 		matrix.reset();
-		float widthScale = viewWidth / w; //Math.min( viewWidth / w, MAX_ZOOM );
-		float heightScale = viewHeight / h; //Math.min( viewHeight / h, MAX_ZOOM );
+		float widthScale = Math.min( viewWidth / w, MAX_ZOOM );
+		float heightScale = Math.min( viewHeight / h, MAX_ZOOM );
 		float scale = Math.min( widthScale, heightScale );
 		matrix.postScale( scale, scale );
 		matrix.postTranslate( ( viewWidth - w * scale ) / MAX_ZOOM, ( viewHeight - h * scale ) / MAX_ZOOM );
