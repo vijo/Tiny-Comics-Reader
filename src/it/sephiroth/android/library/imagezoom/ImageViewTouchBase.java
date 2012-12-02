@@ -39,7 +39,7 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 	protected final float[] mMatrixValues = new float[9];
 	protected int mThisWidth = -1, mThisHeight = -1;
 	protected boolean mFitToScreen = false;
-	final protected float MAX_ZOOM = 2.0f;
+	final protected float MAX_ZOOM = 4.0f;
 
 	protected RectF mBitmapRect = new RectF();
 	protected RectF mCenterRect = new RectF();
