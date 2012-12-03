@@ -12,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -34,7 +35,6 @@ public class ViewComicActivity extends CommonActivity {
 
 	private String m_fileName;
 	private String m_tmpFileName;
-	private boolean m_orientationLocked = false;
 	
     @SuppressLint("NewApi")
 	@Override
@@ -56,10 +56,9 @@ public class ViewComicActivity extends CommonActivity {
         } else {
         	m_fileName = savedInstanceState.getString("fileName");
         	m_tmpFileName = savedInstanceState.getString("tmpFileName");
-        	m_orientationLocked = savedInstanceState.getBoolean("orientationLocked");
         }
 
-        setOrientationLock(m_orientationLocked);
+        setOrientationLock(isOrientationLocked(), true);
         
         if (!isCompatMode()) {
         	getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -93,7 +92,6 @@ public class ViewComicActivity extends CommonActivity {
 
 		out.putString("fileName", m_fileName);
 		out.putString("tmpFileName", m_tmpFileName);
-		out.putBoolean("orientationLocked", m_orientationLocked);
 	}
 	
 	@Override
@@ -165,21 +163,31 @@ public class ViewComicActivity extends CommonActivity {
 	    super.onActivityResult(requestCode, resultCode, intent);
 	}
 	
-	private void setOrientationLock(boolean locked) {
+	protected boolean isOrientationLocked() {
+		return m_prefs.getBoolean("prefs_lock_orientation", false);
+	}
+	
+	private void setOrientationLock(boolean locked, boolean restoreLast) {
 		if (locked) {
-			int currentOrientation = getResources().getConfiguration().orientation;
+			
+			int currentOrientation = restoreLast ? m_prefs.getInt("last_orientation", getResources().getConfiguration().orientation) :					
+					getResources().getConfiguration().orientation;
 			
 			if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
 			   setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-			}
-			else {
+			} else {
 			   setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 			}
 		} else {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 		}
-		
-		m_orientationLocked = locked;
+
+		if (locked != isOrientationLocked()) {
+			SharedPreferences.Editor editor = m_prefs.edit();
+			editor.putBoolean("prefs_lock_orientation", locked);
+			editor.putInt("last_orientation", getResources().getConfiguration().orientation);
+			editor.commit();
+		}
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -188,7 +196,7 @@ public class ViewComicActivity extends CommonActivity {
 			shareComic();			
 			return true;
 		case R.id.menu_toggle_orientation_lock:
-			setOrientationLock(!m_orientationLocked);			
+			setOrientationLock(!isOrientationLocked(), false);			
 			return true;			
 		case R.id.menu_sync_location:
 	        m_syncClient.getPosition(sha1(new File(m_fileName).getName()), new SyncClient.PositionReceivedListener() {
