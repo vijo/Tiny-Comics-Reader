@@ -39,6 +39,7 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 	protected final float[] mMatrixValues = new float[9];
 	protected int mThisWidth = -1, mThisHeight = -1;
 	protected boolean mFitToScreen = false;
+	protected boolean mFitToWidth = false;
 	final protected float MAX_ZOOM = 2.0f;
 
 	protected RectF mBitmapRect = new RectF();
@@ -76,6 +77,13 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 		}
 	}
 
+	public void setFitToWidth( boolean value ) {
+		if ( value != mFitToWidth ) {
+			mFitToWidth = value;
+			requestLayout();
+		}
+	}
+
 	@Override
 	protected void onLayout( boolean changed, int left, int top, int right, int bottom ) {
 		super.onLayout( changed, left, top, right, bottom );
@@ -92,6 +100,9 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 			else
 				getProperBaseMatrix( getDrawable(), mBaseMatrix );
 			setImageMatrix( getImageViewMatrix() );
+			
+			if (mFitToWidth && getScale() - 1f <= 0.01)
+				zoomToWidth();
 		}
 	}
 
@@ -182,13 +193,17 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 	}
 
 	protected void _setImageDrawable( final Drawable drawable, final boolean reset, final Matrix initial_matrix, final float maxZoom ) {
-
+		
 		if ( drawable != null ) {
 			if ( mFitToScreen )
 				getProperBaseMatrix2( drawable, mBaseMatrix );
 			else
 				getProperBaseMatrix( drawable, mBaseMatrix );
 			super.setImageDrawable( drawable );
+			
+			if (mFitToWidth && getScale() - 1f <= 0.01)
+				zoomToWidth();
+			
 		} else {
 			mBaseMatrix.reset();
 			super.setImageDrawable( null );
@@ -482,5 +497,18 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 	@Override
 	public void dispose() {
 		clear();
+	}
+	
+	protected void zoomToWidth() {
+		RectF bitmapRect = getBitmapRect();
+		
+		float w = bitmapRect.right - bitmapRect.left;
+
+		float scale = 1f;
+		
+		if (w < getWidth()) {
+			scale = (float)getWidth() / w;
+			zoomTo(scale, 0f, 0f);
+		}
 	}
 }

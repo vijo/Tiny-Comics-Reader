@@ -84,7 +84,11 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 				image.setBackgroundColor(0xff000000);
 			}
 			
-			image.setFitToScreen(true);
+			if (m_prefs.getBoolean("fit_to_width", false)) {
+				image.setFitToWidth(true);
+			} else {
+				image.setFitToScreen(true);
+			}
 			
 			AsyncTask<ComicArchive, Void, Bitmap> loadTask = new AsyncTask<ComicArchive, Void, Bitmap>() {
 				@Override

@@ -48,6 +48,11 @@
             android:defaultValue="false"
             android:key="use_full_screen"
             android:title="@string/prefs_use_full_screen" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="fit_to_width"
+            android:title="@string/prefs_fit_to_width" />
         
 	</PreferenceCategory>
 </PreferenceScreen>
