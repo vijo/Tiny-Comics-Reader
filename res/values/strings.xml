@@ -58,5 +58,5 @@
     <string name="file_finished">Finished</string>
     <string name="menu_toggle_orientation_lock">(Un)lock orientation</string>
     <string name="prefs_comics_directory_summary">Base directory for comic archives.</string>
-    <string name="prefs_fit_to_width">Fit comics to width by default.</string>
+    <string name="prefs_fit_to_width">Fit to width</string>
 </resources>
