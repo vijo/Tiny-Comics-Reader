@@ -28,44 +28,43 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 	private int m_page;
 	private CommonActivity m_activity;
 	private GestureDetector m_detector;
-	private boolean m_thumbnail = true;
+	private boolean m_thumbnail = false;
 	
 	public ComicFragment() {
 		super();
 	}
 	
-	public void setThumbnail(boolean thumbnail) {
+	private void setThumbnail(boolean thumbnail) {
 		if (m_thumbnail != thumbnail) {
-			
 			m_thumbnail = thumbnail;
-			
-			AsyncTask<ComicArchive, Void, Bitmap> loadTask = new AsyncTask<ComicArchive, Void, Bitmap>() {
-				@Override
-				protected Bitmap doInBackground(ComicArchive... params) {
-					return loadImage(params[0], m_page);
-				}
+
+			if (isAdded()) {
+				AsyncTask<ComicArchive, Void, Bitmap> loadTask = new AsyncTask<ComicArchive, Void, Bitmap>() {
+					@Override
+					protected Bitmap doInBackground(ComicArchive... params) {
+						return loadImage(params[0], m_page);
+					}
+					
+					@Override
+					protected void onPostExecute(Bitmap result) {
+						CommonActivity activity = (CommonActivity) getActivity();
+						
+						ImageViewTouch image = (ImageViewTouch) getView().findViewById(R.id.comic_image);
+						
+						if (activity != null && isAdded() && image != null) {
+							if (result != null) {
+								image.setImageBitmap(result);
+							} else {							
+								activity.toast(R.string.error_loading_image);
+								image.setImageResource(R.drawable.badimage);
+							}
+						}					
+					}
+				};
 				
-				@Override
-				protected void onPostExecute(Bitmap result) {
-					CommonActivity activity = (CommonActivity) getActivity();
-					
-					ImageViewTouch image = (ImageViewTouch) getView().findViewById(R.id.comic_image);
-					
-					if (activity != null && isAdded() && image != null) {
-						if (result != null) {
-							image.setImageBitmap(result);
-						} else {							
-							activity.toast(R.string.error_loading_image);
-							image.setImageResource(R.drawable.badimage);
-						}
-					}					
-				}
-			};
-			
-			ComicPager pager = (ComicPager) getActivity().getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_COMICS_PAGER);
-			
-			loadTask.execute(pager.getArchive());
-			
+				ComicPager pager = (ComicPager) getActivity().getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_COMICS_PAGER);
+				loadTask.execute(pager.getArchive());
+			}
 		}
 	}
 	
@@ -88,7 +87,7 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 		    int sampleSizes[];
 		    
 		    if (m_thumbnail) {
-		    	sampleSizes = new int[] { 256 };
+		    	sampleSizes = new int[] { 512, 256 };
 		    } else {
 		    	sampleSizes = new int[] { 1024, 768, 512, 256 };
 		    }
@@ -135,11 +134,11 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 			if (CommonActivity.isCompatMode() && m_prefs.getBoolean("use_dark_theme", false)) {
 				image.setBackgroundColor(0xff000000);
 			}
-			
+
+			image.setFitToScreen(true);
+
 			if (m_prefs.getBoolean("fit_to_width", false)) {
 				image.setFitToWidth(true);
-			} else {
-				image.setFitToScreen(true);
 			}
 			
 			AsyncTask<ComicArchive, Void, Bitmap> loadTask = new AsyncTask<ComicArchive, Void, Bitmap>() {
@@ -229,7 +228,7 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
 		
-		setThumbnail(!isVisibleToUser);
+		//setThumbnail(!isVisibleToUser); disabled
 	}
 	
 	@Override

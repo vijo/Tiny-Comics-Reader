@@ -101,8 +101,7 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 				getProperBaseMatrix( getDrawable(), mBaseMatrix );
 			setImageMatrix( getImageViewMatrix() );
 			
-			if (mFitToWidth && getScale() - 1f <= 0.01)
-				zoomToWidth();
+			if (mFitToWidth) zoomToWidth();
 		}
 	}
 
@@ -201,8 +200,7 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 				getProperBaseMatrix( drawable, mBaseMatrix );
 			super.setImageDrawable( drawable );
 			
-			if (mFitToWidth && getScale() - 1f <= 0.01)
-				zoomToWidth();
+			if (mFitToWidth) zoomToWidth();
 			
 		} else {
 			mBaseMatrix.reset();
@@ -309,7 +307,7 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 		float heightScale = Math.min( viewHeight / h, MAX_ZOOM );
 		float scale = Math.min( widthScale, heightScale );
 		matrix.postScale( scale, scale );
-		matrix.postTranslate( ( viewWidth - w * scale ) / MAX_ZOOM, ( viewHeight - h * scale ) / MAX_ZOOM );
+		matrix.postTranslate( ( viewWidth - w * scale ) / 2.0f, ( viewHeight - h * scale ) / 2.0f );
 	}
 
 	protected float getValue( Matrix matrix, int whichValue ) {
@@ -406,9 +404,7 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 	}
 
 	protected void zoomTo( float scale, float centerX, float centerY ) {
-		// Log.i(LOG_TAG, "zoomTo");
-
-		//if ( scale > mMaxZoom ) scale = mMaxZoom;
+		if ( scale > mMaxZoom ) scale = mMaxZoom;
 		float oldScale = getScale();
 		float deltaScale = scale / oldScale;
 		postScale( deltaScale, centerX, centerY );
@@ -503,11 +499,10 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 		RectF bitmapRect = getBitmapRect();
 		
 		float w = bitmapRect.right - bitmapRect.left;
-
-		float scale = 1f;
 		
 		if (w < getWidth()) {
-			scale = (float)getWidth() / w;
+			float scale = (float)getWidth() / w;
+			
 			zoomTo(scale, 0f, 0f);
 		}
 	}
