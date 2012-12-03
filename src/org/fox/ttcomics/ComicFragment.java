@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -47,30 +48,26 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 		    options.inJustDecodeBounds = false;
 
 		    Bitmap bitmap = null;
+
+		    int sampleSizes[] = new int[] { 1024, 768, 512, 256 };
 		    
-		    try {
-			    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 1024, 1024);
-		    	bitmap = BitmapFactory.decodeStream(archive.getItem(page), null, options);
-		    	return bitmap;
-		    } catch (OutOfMemoryError e) {
+		    for (int sampleSize : sampleSizes) {
 		    	try {
-				    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 768, 768);
-			    	bitmap = BitmapFactory.decodeStream(archive.getItem(page), null, options);
-			    	return bitmap;
-		    	} catch (OutOfMemoryError e1) {
-		    		try {
-		    			options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
-		    			bitmap = BitmapFactory.decodeStream(archive.getItem(page), null, options);
-		    			return bitmap;
-		    		} catch (OutOfMemoryError e3) {
-		    			e3.printStackTrace();
-		    			
-		    			if (activity != null) {		
+		    		options.inSampleSize = CommonActivity.calculateInSampleSize(options, sampleSize, sampleSize);
+		    		bitmap = BitmapFactory.decodeStream(archive.getItem(page), null, options);
+		    		
+		    		return bitmap;		    		
+		    	} catch (OutOfMemoryError e) {
+		    		if (sampleSize == sampleSizes[sampleSizes.length-1]) {
+			    		e.printStackTrace();
+
+		    			if (activity != null && isAdded()) {
 		    				activity.toast(R.string.error_out_of_memory);
-		    			}
-		    		}		    		
+		    			}		    			
+		    		}
 		    	}
 		    }
+		    
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
