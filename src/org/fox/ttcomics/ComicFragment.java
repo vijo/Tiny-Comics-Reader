@@ -44,21 +44,33 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 			final BitmapFactory.Options options = new BitmapFactory.Options();
 		    options.inJustDecodeBounds = true;
 		    BitmapFactory.decodeStream(archive.getItem(page), null, options);
-
-		    if (CommonActivity.isCompatMode()) {
-		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
-		    } else {		    
-		    	options.inSampleSize = CommonActivity.calculateInSampleSize(options, 1024, 1024);
-		    }
-		    
 		    options.inJustDecodeBounds = false;
+
+		    Bitmap bitmap = null;
 		    
-			return BitmapFactory.decodeStream(archive.getItem(page), null, options);
-		} catch (OutOfMemoryError e) {
-			if (activity != null) {		
-				activity.toast(R.string.error_out_of_memory);
-			}
-			e.printStackTrace();
+		    try {
+			    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 1024, 1024);
+		    	bitmap = BitmapFactory.decodeStream(archive.getItem(page), null, options);
+		    	return bitmap;
+		    } catch (OutOfMemoryError e) {
+		    	try {
+				    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 768, 768);
+			    	bitmap = BitmapFactory.decodeStream(archive.getItem(page), null, options);
+			    	return bitmap;
+		    	} catch (OutOfMemoryError e1) {
+		    		try {
+		    			options.inSampleSize = CommonActivity.calculateInSampleSize(options, 512, 512);
+		    			bitmap = BitmapFactory.decodeStream(archive.getItem(page), null, options);
+		    			return bitmap;
+		    		} catch (OutOfMemoryError e3) {
+		    			e3.printStackTrace();
+		    			
+		    			if (activity != null) {		
+		    				activity.toast(R.string.error_out_of_memory);
+		    			}
+		    		}		    		
+		    	}
+		    }
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
