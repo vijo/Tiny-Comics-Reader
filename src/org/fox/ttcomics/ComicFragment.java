@@ -28,9 +28,45 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 	private int m_page;
 	private CommonActivity m_activity;
 	private GestureDetector m_detector;
+	private boolean m_thumbnail = true;
 	
 	public ComicFragment() {
 		super();
+	}
+	
+	public void setThumbnail(boolean thumbnail) {
+		if (m_thumbnail != thumbnail) {
+			
+			m_thumbnail = thumbnail;
+			
+			AsyncTask<ComicArchive, Void, Bitmap> loadTask = new AsyncTask<ComicArchive, Void, Bitmap>() {
+				@Override
+				protected Bitmap doInBackground(ComicArchive... params) {
+					return loadImage(params[0], m_page);
+				}
+				
+				@Override
+				protected void onPostExecute(Bitmap result) {
+					CommonActivity activity = (CommonActivity) getActivity();
+					
+					ImageViewTouch image = (ImageViewTouch) getView().findViewById(R.id.comic_image);
+					
+					if (activity != null && isAdded() && image != null) {
+						if (result != null) {
+							image.setImageBitmap(result);
+						} else {							
+							activity.toast(R.string.error_loading_image);
+							image.setImageResource(R.drawable.badimage);
+						}
+					}					
+				}
+			};
+			
+			ComicPager pager = (ComicPager) getActivity().getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_COMICS_PAGER);
+			
+			loadTask.execute(pager.getArchive());
+			
+		}
 	}
 	
 	public ComicFragment(int page) {
@@ -49,7 +85,13 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 
 		    Bitmap bitmap = null;
 
-		    int sampleSizes[] = new int[] { 1024, 768, 512, 256 };
+		    int sampleSizes[];
+		    
+		    if (m_thumbnail) {
+		    	sampleSizes = new int[] { 256 };
+		    } else {
+		    	sampleSizes = new int[] { 1024, 768, 512, 256 };
+		    }
 		    
 		    for (int sampleSize : sampleSizes) {
 		    	try {
@@ -84,6 +126,7 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 		
 		if (savedInstanceState != null) {
 			m_page = savedInstanceState.getInt("page");
+			m_thumbnail = savedInstanceState.getBoolean("thumbnail");
 		}
 		
 		ComicPager pager = (ComicPager) getActivity().getSupportFragmentManager().findFragmentByTag(CommonActivity.FRAG_COMICS_PAGER);
@@ -183,6 +226,13 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 	}
 
 	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		super.setUserVisibleHint(isVisibleToUser);
+		
+		setThumbnail(!isVisibleToUser);
+	}
+	
+	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
@@ -237,6 +287,7 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 	public void onSaveInstanceState(Bundle out) {
 		super.onSaveInstanceState(out);
 		out.putInt("page", m_page);
+		out.putBoolean("thumbnail", m_thumbnail);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
+import java.util.HashMap;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -528,7 +529,6 @@ public class CommonActivity extends FragmentActivity {
 		}
 		
 		c.close();
-		
-		
 	}
+
 }

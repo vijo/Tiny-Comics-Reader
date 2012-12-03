@@ -408,7 +408,7 @@ public class ImageViewTouchBase extends ImageView implements IDisposable {
 	protected void zoomTo( float scale, float centerX, float centerY ) {
 		// Log.i(LOG_TAG, "zoomTo");
 
-		if ( scale > mMaxZoom ) scale = mMaxZoom;
+		//if ( scale > mMaxZoom ) scale = mMaxZoom;
 		float oldScale = getScale();
 		float deltaScale = scale / oldScale;
 		postScale( deltaScale, centerX, centerY );

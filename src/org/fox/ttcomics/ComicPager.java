@@ -1,6 +1,7 @@
 package org.fox.ttcomics;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.github.junrar.exception.RarException;
 
@@ -31,7 +32,7 @@ public class ComicPager extends Fragment {
 
 		@Override
 		public Fragment getItem(int position) {
-			return new ComicFragment(position);
+			return new ComicFragment(position); 
 		}
 
 		@Override
@@ -124,7 +125,6 @@ public class ComicPager extends Fragment {
 		}
 		
 		pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-			
 			public void onPageSelected(int position) {
 
 				m_activity.onComicSelected(m_fileName, position);
@@ -137,12 +137,10 @@ public class ComicPager extends Fragment {
 			
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
 				// TODO Auto-generated method stub
-				
 			}
 			
 			public void onPageScrollStateChanged(int arg0) {
 				// TODO Auto-generated method stub
-				
 			}
 		});
 		
