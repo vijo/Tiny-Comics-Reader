@@ -47,7 +47,7 @@ public class CbrComicArchive extends ComicArchive {
 			if (!header.isDirectory()) {
 				String name = header.isUnicode() ? header.getFileNameW() : header.getFileNameString();
 				
-				if (name.toLowerCase().matches(".*\\.(jpg|bmp|gif)$")) {
+				if (isValidComic(name)) {
 					m_entries.add(header);
 				}				
 			}

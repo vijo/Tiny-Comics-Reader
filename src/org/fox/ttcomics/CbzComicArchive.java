@@ -33,7 +33,7 @@ public class CbzComicArchive extends ComicArchive {
 
 		while (e.hasMoreElements()) {
 			ZipEntry ze = e.nextElement();		
-			if (!ze.isDirectory() && ze.getName().toLowerCase().matches(".*\\.(jpg|bmp|gif)$")) {
+			if (!ze.isDirectory() && isValidComic(ze.getName())) {
 				m_entries.add(ze);
 				m_count++;
 			}
