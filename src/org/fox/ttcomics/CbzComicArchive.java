@@ -15,7 +15,7 @@ public class CbzComicArchive extends ComicArchive {
 	private ZipFile m_zipFile;
 	private int m_count;
 	private ArrayList<ZipEntry> m_entries = new ArrayList<ZipEntry>();
-	
+		
 	@Override
 	public int getCount() {
 		return m_count;

@@ -53,7 +53,7 @@
     <string name="prefs_clear_sync_data_summary">Removes all remotely stored sync data.</string>
     <string name="open_parent">Open parent</string>
     <string name="prefs_enable_rar_archives">Enable RAR archives</string>
-    <string name="prefs_enable_rar_summary">Using RAR (CBR) files is not recommended because of underlying RAR library issues.</string>
+    <string name="prefs_enable_rar_summary">Using RAR (CBR) files is not recommended because of underlying RAR library issues. If you experience crashes, disable this option, and repack your archives as ZIP.</string>
     <string name="file_unread">Unread (%1$d pages)</string>
     <string name="file_finished">Finished</string>
     <string name="menu_toggle_orientation_lock">(Un)lock orientation</string>
