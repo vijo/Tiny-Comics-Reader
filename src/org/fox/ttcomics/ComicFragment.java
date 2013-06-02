@@ -1,10 +1,12 @@
 package org.fox.ttcomics;
 
+
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 
 import java.io.IOException;
 
-import android.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -312,8 +314,8 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 			onLeftSideTapped();
 		} else if (x >= width-(width/10)) {
 			onRightSideTapped();
-		} else if (!CommonActivity.isCompatMode()) {
-			ActionBar bar = m_activity.getActionBar();
+		} else {
+			ActionBar bar = m_activity.getSupportActionBar();
 			
 			if (bar.isShowing()) {
 				bar.hide();

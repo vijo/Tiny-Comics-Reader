@@ -1,10 +1,10 @@
 package org.fox.ttcomics;
 
+
 import java.io.File;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.HashMap;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -19,14 +19,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Display;
-import android.view.MenuItem;
-import android.view.WindowManager;
 import android.widget.Toast;
 
-public class CommonActivity extends FragmentActivity {
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.MenuItem;
+
+public class CommonActivity extends SherlockFragmentActivity {
 	private final String TAG = this.getClass().getSimpleName();
 
 	protected static final String FRAG_COMICS_PAGER = "comic_pager";

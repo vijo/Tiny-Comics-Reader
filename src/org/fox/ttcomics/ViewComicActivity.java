@@ -1,9 +1,13 @@
 package org.fox.ttcomics;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -21,8 +25,6 @@ import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -60,9 +62,7 @@ public class ViewComicActivity extends CommonActivity {
 
         setOrientationLock(isOrientationLocked(), true);
         
-        if (!isCompatMode()) {
-        	getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+       	getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         
         setTitle(new File(m_fileName).getName());
 
@@ -70,16 +70,14 @@ public class ViewComicActivity extends CommonActivity {
         	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         	
-        	if (!isCompatMode()) {
-        		getActionBar().hide();
-        	}
+       		getSupportActionBar().hide();
         }
         
     }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_view_comic, menu);
+        getSupportMenuInflater().inflate(R.menu.activity_view_comic, menu);
         
         menu.findItem(R.id.menu_sync_location).setVisible(m_prefs.getBoolean("use_position_sync", false) && m_syncClient.hasOwner());
         

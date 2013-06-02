@@ -1,19 +1,21 @@
 package org.fox.ttcomics;
 
+
 import java.io.File;
+
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ShareActionProvider;
@@ -29,11 +31,13 @@ public class MainActivity extends CommonActivity {
 	@SuppressLint("NewApi")
 	private class TabListener implements ActionBar.TabListener {
 
-		public void onTabReselected(Tab tab, android.app.FragmentTransaction ft) {
+		@Override
+		public void onTabReselected(Tab tab, FragmentTransaction ft) {
 			// TODO Auto-generated method stub			
 		}
 
-		public void onTabSelected(Tab tab, android.app.FragmentTransaction ft) {
+		@Override
+		public void onTabSelected(Tab tab, FragmentTransaction ft) {
 			FragmentTransaction sft = getSupportFragmentManager().beginTransaction();
 			
 			if (m_selectedTab != tab.getPosition() && m_selectedTab != -1) {
@@ -50,7 +54,8 @@ public class MainActivity extends CommonActivity {
 			sft.commit();			
 		}
 
-		public void onTabUnselected(Tab tab, android.app.FragmentTransaction ft) {
+		@Override
+		public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 			// TODO Auto-generated method stub
 			
 		}
@@ -96,23 +101,23 @@ public class MainActivity extends CommonActivity {
     	if (!isCompatMode()) {
     		m_tabListener = new TabListener();
     		
-	    	ActionBar actionBar = getActionBar();
+	    	ActionBar actionBar = getSupportActionBar();
 	    	
 	    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 	    	
-	    	actionBar.addTab(getActionBar().newTab()
+	    	actionBar.addTab(getSupportActionBar().newTab()
 	    			.setText(R.string.tab_all_comics)
 	    			.setTabListener(m_tabListener));
 	
-	    	actionBar.addTab(getActionBar().newTab()
+	    	actionBar.addTab(getSupportActionBar().newTab()
 	    			.setText(R.string.tab_unread)
 	    			.setTabListener(m_tabListener));
 	
-	    	actionBar.addTab(getActionBar().newTab()
+	    	actionBar.addTab(getSupportActionBar().newTab()
 	    			.setText(R.string.tab_unfinished)
 	    			.setTabListener(m_tabListener));
 	
-	    	actionBar.addTab(getActionBar().newTab()
+	    	actionBar.addTab(getSupportActionBar().newTab()
 	    			.setText(R.string.tab_read)
 	    			.setTabListener(m_tabListener));
 	
@@ -156,7 +161,7 @@ public class MainActivity extends CommonActivity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
+        getSupportMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
 
