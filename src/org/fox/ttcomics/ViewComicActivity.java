@@ -1,19 +1,14 @@
 package org.fox.ttcomics;
 
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
-
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,7 +16,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +25,9 @@ import android.view.WindowManager;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 public class ViewComicActivity extends CommonActivity {
 	private final String TAG = this.getClass().getSimpleName();
@@ -42,10 +39,11 @@ public class ViewComicActivity extends CommonActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (!isCompatMode())
+        	setTheme(m_prefs.getBoolean("use_dark_theme", false) ? R.style.DarkTheme : R.style.AppTheme);
         
         requestWindowFeature(Window.FEATURE_PROGRESS);
-        
-        setTheme(m_prefs.getBoolean("use_dark_theme", false) ? R.style.DarkTheme : R.style.AppTheme);
         
         setContentView(R.layout.activity_view_comic);
         

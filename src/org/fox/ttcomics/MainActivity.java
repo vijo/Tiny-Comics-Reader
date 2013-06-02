@@ -98,39 +98,37 @@ public class MainActivity extends CommonActivity {
         	m_fileName = savedInstanceState.getString("fileName");
     	}
     	
-    	if (!isCompatMode()) {
-    		m_tabListener = new TabListener();
-    		
-	    	ActionBar actionBar = getSupportActionBar();
-	    	
-	    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-	    	
-	    	actionBar.addTab(getSupportActionBar().newTab()
-	    			.setText(R.string.tab_all_comics)
-	    			.setTabListener(m_tabListener));
-	
-	    	actionBar.addTab(getSupportActionBar().newTab()
-	    			.setText(R.string.tab_unread)
-	    			.setTabListener(m_tabListener));
-	
-	    	actionBar.addTab(getSupportActionBar().newTab()
-	    			.setText(R.string.tab_unfinished)
-	    			.setTabListener(m_tabListener));
-	
-	    	actionBar.addTab(getSupportActionBar().newTab()
-	    			.setText(R.string.tab_read)
-	    			.setTabListener(m_tabListener));
-	
-	    	if (savedInstanceState != null) {
-	    		m_selectedTab = savedInstanceState.getInt("selectedTab");
-	    	} else {
-	    		m_selectedTab = getIntent().getIntExtra("selectedTab", 0);
-	    	}
-	    	
-	   		actionBar.selectTab(actionBar.getTabAt(m_selectedTab));
-	   		
-	    	actionBar.setDisplayHomeAsUpEnabled(m_baseDirectory.length() > 0);
+		m_tabListener = new TabListener();
+		
+    	ActionBar actionBar = getSupportActionBar();
+    	
+    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+    	
+    	actionBar.addTab(getSupportActionBar().newTab()
+    			.setText(R.string.tab_all_comics)
+    			.setTabListener(m_tabListener));
+
+    	actionBar.addTab(getSupportActionBar().newTab()
+    			.setText(R.string.tab_unread)
+    			.setTabListener(m_tabListener));
+
+    	actionBar.addTab(getSupportActionBar().newTab()
+    			.setText(R.string.tab_unfinished)
+    			.setTabListener(m_tabListener));
+
+    	actionBar.addTab(getSupportActionBar().newTab()
+    			.setText(R.string.tab_read)
+    			.setTabListener(m_tabListener));
+
+    	if (savedInstanceState != null) {
+    		m_selectedTab = savedInstanceState.getInt("selectedTab");
+    	} else {
+    		m_selectedTab = getIntent().getIntExtra("selectedTab", 0);
     	}
+    	
+   		actionBar.selectTab(actionBar.getTabAt(m_selectedTab));
+   		
+    	actionBar.setDisplayHomeAsUpEnabled(m_baseDirectory.length() > 0);
 	
     	if (m_prefs.getString("comics_directory", null) == null) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
