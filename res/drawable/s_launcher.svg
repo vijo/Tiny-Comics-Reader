@@ -13,11 +13,11 @@
    height="96"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.1 "
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="s_launcher.svg"
-   inkscape:export-filename="C:\Users\fox\workspace\org.fox.ttcomics\res\drawable-hdpi\ic_launcher.png"
-   inkscape:export-xdpi="67.5"
-   inkscape:export-ydpi="67.5">
+   inkscape:export-filename="C:\Users\Andrew\workspace\Tiny-Comics-Reader\res\drawable-xxhdpi\ic_launcher.png"
+   inkscape:export-xdpi="135"
+   inkscape:export-ydpi="135">
   <defs
      id="defs4">
     <linearGradient
@@ -115,7 +115,7 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1138"
+     inkscape:window-height="1137"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
