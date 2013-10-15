@@ -46,7 +46,8 @@ public class MainActivity extends CommonActivity {
 			
 			if (m_selectedTab != tab.getPosition() && m_selectedTab != -1) {
 				
-				ComicListFragment frag = new ComicListFragment(tab.getPosition()); 
+				ComicListFragment frag = new ComicListFragment();
+				frag.setMode(tab.getPosition());
 				
 				frag.setBaseDirectory(m_baseDirectory);
 				
@@ -84,7 +85,8 @@ public class MainActivity extends CommonActivity {
     		
            	Log.d(TAG, "selTab=" + m_selectedTab);
 
-           	ComicListFragment frag = new ComicListFragment(m_selectedTab);
+           	ComicListFragment frag = new ComicListFragment();
+           	frag.setMode(m_selectedTab);
 
             if (getIntent().getStringExtra("baseDir") != null) {
             	m_baseDirectory = getIntent().getStringExtra("baseDir");
