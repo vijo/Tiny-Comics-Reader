@@ -85,11 +85,13 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			int lastPos = m_activity.getLastPosition(filePath + "/" + fileBaseName);
 			int size = m_activity.getSize(filePath + "/" + fileBaseName);
 
+			boolean isList = ComicListFragment.this.getView().findViewById(R.id.comics_list) != null;
+			
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				
 				
-				v = vi.inflate(ComicListFragment.this.getView().findViewById(R.id.comics_list) != null ? R.layout.comics_list_row : R.layout.comics_grid_row, null);
+				v = vi.inflate(isList ? R.layout.comics_list_row : R.layout.comics_grid_row, null);
 
 			}
 			
@@ -133,11 +135,24 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
 			if (thumbnail != null) {
+				/* View imageholder1 = v.findViewById(R.id.imageholder1);
+				
 				if (size == SIZE_DIR) {
-					thumbnail.setBackgroundResource(R.drawable.border_folder);
+					
+					if (isList && imageholder1 != null) {
+						imageholder1.setBackgroundResource(R.drawable.border_folder);
+					} else {
+						thumbnail.setBackgroundResource(R.drawable.border_folder);
+					}
+
 				} else {
-					thumbnail.setBackgroundResource(R.drawable.border);
-				}
+					
+					if (isList && imageholder1 != null) {
+						imageholder1.setBackgroundResource(R.drawable.border);
+					} else {
+						thumbnail.setBackgroundResource(R.drawable.border);
+					}
+				} */
 				
 				thumbnail.setImageResource(R.drawable.ic_launcher);
 				
