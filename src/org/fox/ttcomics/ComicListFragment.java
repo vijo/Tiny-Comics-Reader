@@ -18,6 +18,7 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -137,10 +138,12 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			if (thumbnail != null) {
 				View imageholder = v.findViewById(R.id.listimageholder);
 				
+				int padding = dpToPx(2);
+				
 				if (size == SIZE_DIR) {					
 					if (isList && imageholder != null) {
 						imageholder.setBackgroundResource(R.drawable.border_folder);
-						imageholder.setPadding(2, 2, 2, 2);
+						imageholder.setPadding(padding, padding, padding, padding);
 					} else {
 						thumbnail.setBackgroundResource(R.drawable.border_folder);
 					}
@@ -149,7 +152,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 					
 					if (isList && imageholder != null) {
 						imageholder.setBackgroundResource(R.drawable.border);
-						imageholder.setPadding(2, 2, 2, 2);
+						imageholder.setPadding(padding, padding, padding, padding);
 					} else {
 						thumbnail.setBackgroundResource(R.drawable.border);
 					}
@@ -168,6 +171,12 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 
 			return v;
 		}
+	}
+	
+	public int dpToPx(int dp) {
+	    DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+	    int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));       
+	    return px;
 	}
 
 	class CoverImageLoader extends AsyncTask<ImageView, Void, Bitmap> {
