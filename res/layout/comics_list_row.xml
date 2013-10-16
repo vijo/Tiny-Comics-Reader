@@ -8,7 +8,7 @@
     android:padding="4dp" >
 
     <FrameLayout
-        android:id="@+id/imageholder1"
+        android:id="@+id/listimageholder"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_weight="0"
