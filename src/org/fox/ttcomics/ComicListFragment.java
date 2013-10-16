@@ -135,10 +135,9 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
 			if (thumbnail != null) {
-				/* View imageholder1 = v.findViewById(R.id.imageholder1);
+				View imageholder1 = v.findViewById(R.id.imageholder1);
 				
-				if (size == SIZE_DIR) {
-					
+				if (size == SIZE_DIR) {					
 					if (isList && imageholder1 != null) {
 						imageholder1.setBackgroundResource(R.drawable.border_folder);
 					} else {
@@ -152,8 +151,9 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 					} else {
 						thumbnail.setBackgroundResource(R.drawable.border);
 					}
-				} */
+				}
 				
+				thumbnail.setTag("");
 				thumbnail.setImageResource(R.drawable.ic_launcher);
 				
 				if (m_activity.isStorageAvailable() && thumbnailFile.exists()) {
@@ -170,13 +170,16 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 
 	class CoverImageLoader extends AsyncTask<ImageView, Void, Bitmap> {
 		private ImageView m_thumbnail;
+		private String m_tag;
 		
 		@Override
 		protected Bitmap doInBackground(ImageView... params) {
 			m_thumbnail = params[0];
 			
 			if (m_thumbnail != null) {
-				File thumbnailFile = new File(m_thumbnail.getTag().toString());
+				m_tag = m_thumbnail.getTag().toString(); 
+				
+				File thumbnailFile = new File(m_tag);
 				
 				if (thumbnailFile.exists() && thumbnailFile.canRead()) {
 				
@@ -198,7 +201,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		
 		@Override
         protected void onPostExecute(Bitmap bmp) {
-			if (isAdded() && bmp != null) {
+			if (isAdded() && bmp != null && m_tag != null && m_tag.equals(m_thumbnail.getTag().toString())) {
 				m_thumbnail.setImageBitmap(bmp);
 			}
 		}
