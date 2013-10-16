@@ -61,12 +61,10 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		m_baseDirectory = baseDirectory;		
 	}
 	
-	public ComicListFragment(int mode) {
-		super();
-		
+	public void setMode(int mode) {
 		m_mode = mode;
 	}
-
+	
 	private class ComicsListAdapter extends SimpleCursorAdapter {
 		public ComicsListAdapter(Context context, int layout, Cursor c,
 				String[] from, int[] to, int flags) {
@@ -135,30 +133,19 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
 			if (thumbnail != null) {
-				
 				if (size == SIZE_DIR) {
 					thumbnail.setBackgroundResource(R.drawable.border_folder);
 				} else {
 					thumbnail.setBackgroundResource(R.drawable.border);
 				}
-
+				
+				thumbnail.setImageResource(R.drawable.ic_launcher);
+				
 				if (m_activity.isStorageAvailable() && thumbnailFile.exists()) {
-					//
-					
-				    final BitmapFactory.Options options = new BitmapFactory.Options();
-				    options.inJustDecodeBounds = true;
-				    BitmapFactory.decodeFile(thumbnailFile.getAbsolutePath(), options);
+					thumbnail.setTag(thumbnailFile.getAbsolutePath());
 
-				    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 128, 128);
-				    options.inJustDecodeBounds = false;
-				    
-				    Bitmap bmp = BitmapFactory.decodeFile(thumbnailFile.getAbsolutePath(), options);
-				    
-					if (bmp != null) {
-						thumbnail.setImageBitmap(bmp);
-					}
-				} else {
-					thumbnail.setImageResource(R.drawable.ic_launcher);
+					CoverImageLoader imageLoader = new CoverImageLoader();
+					imageLoader.execute(thumbnail);
 				}
 			}
 
@@ -166,6 +153,42 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		}
 	}
 
+	class CoverImageLoader extends AsyncTask<ImageView, Void, Bitmap> {
+		private ImageView m_thumbnail;
+		
+		@Override
+		protected Bitmap doInBackground(ImageView... params) {
+			m_thumbnail = params[0];
+			
+			if (m_thumbnail != null) {
+				File thumbnailFile = new File(m_thumbnail.getTag().toString());
+				
+				if (thumbnailFile.exists() && thumbnailFile.canRead()) {
+				
+				    final BitmapFactory.Options options = new BitmapFactory.Options();
+				    options.inJustDecodeBounds = true;
+				    BitmapFactory.decodeFile(thumbnailFile.getAbsolutePath(), options);
+		
+				    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 128, 128);
+				    options.inJustDecodeBounds = false;
+				    
+				    Bitmap bmp = BitmapFactory.decodeFile(thumbnailFile.getAbsolutePath(), options);
+				
+				    return bmp;
+				}
+			}
+			
+			return null;
+		}
+		
+		@Override
+        protected void onPostExecute(Bitmap bmp) {
+			if (isAdded() && bmp != null) {
+				m_thumbnail.setImageBitmap(bmp);
+			}
+		}
+		
+	};
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {    	
