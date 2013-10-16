@@ -135,6 +135,13 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
 			if (thumbnail != null) {
+				
+				if (size == SIZE_DIR) {
+					thumbnail.setBackgroundResource(R.drawable.border_folder);
+				} else {
+					thumbnail.setBackgroundResource(R.drawable.border);
+				}
+
 				if (m_activity.isStorageAvailable() && thumbnailFile.exists()) {
 					//
 					
