@@ -8,12 +8,15 @@ import java.util.Date;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -321,6 +324,25 @@ public class CommonActivity extends SherlockFragmentActivity {
     
     public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.menu_donate:
+	         if (true) {
+	             try {
+	                Intent intent = new Intent(Intent.ACTION_VIEW,
+	                   Uri.parse("market://details?id=org.fox.ttcomics.donation"));
+	                startActivity(intent);
+	             } catch (ActivityNotFoundException ae) {
+	                try {
+	                   Intent intent = new Intent(Intent.ACTION_VIEW,
+	                      Uri.parse("https://play.google.com/store/apps/details?id=org.fox.ttcomics.donation"));
+	                   startActivity(intent);
+	                } catch (Exception e) {
+	                   e.printStackTrace();
+	                }
+	             }
+	          }
+
+			
+			return true;
 		case R.id.menu_rescan:
 			ComicListFragment frag = (ComicListFragment) getSupportFragmentManager().findFragmentByTag(FRAG_COMICS_LIST);
 			

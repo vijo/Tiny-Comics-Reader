@@ -17,6 +17,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -166,6 +167,13 @@ public class MainActivity extends CommonActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getSupportMenuInflater().inflate(R.menu.activity_main, menu);
+
+		boolean isDonationFound = getPackageManager().checkSignatures(
+				getPackageName(), "org.fox.ttcomics.donation") == PackageManager.SIGNATURE_MATCH;
+
+        if (isDonationFound)
+        	menu.findItem(R.id.menu_donate).setVisible(false);
+        
         return true;
     }
 
