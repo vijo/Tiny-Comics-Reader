@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -70,6 +72,10 @@ public class ViewComicActivity extends CommonActivity {
 
            	//getSupportActionBar().hide();
         } */
+        
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT && m_prefs.getBoolean("use_dark_theme", false)) {
+        	getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        }
     }
     
     @Override
