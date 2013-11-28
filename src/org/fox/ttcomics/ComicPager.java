@@ -115,6 +115,7 @@ public class ComicPager extends Fragment {
 			
 			m_activity.onComicSelected(m_fileName, position);
 			m_activity.setProgress(Math.round(((float)position / (float)(m_archive.getCount()-1)) * 10000));
+			m_activity.hideSystemUiIfNecessary();
 			
 		} catch (IOException e) {
 			m_activity.toast(R.string.error_could_not_open_comic_archive);
@@ -129,10 +130,8 @@ public class ComicPager extends Fragment {
 
 				m_activity.onComicSelected(m_fileName, position);
 				m_activity.setProgress(Math.round(((float)position / (float)(m_archive.getCount()-1)) * 10000));
-								
-				if (!CommonActivity.isCompatMode() && m_prefs.getBoolean("dim_status_bar", false)) {
-					view.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
-				}
+				
+				m_activity.hideSystemUiIfNecessary();
 			}
 			
 			public void onPageScrolled(int arg0, float arg1, int arg2) {

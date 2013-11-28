@@ -64,13 +64,12 @@ public class ViewComicActivity extends CommonActivity {
         
         setTitle(new File(m_fileName).getName());
 
-        if (m_prefs.getBoolean("use_full_screen", false)) {
-        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        	
-       		getSupportActionBar().hide();
-        }
-        
+        /* if (m_prefs.getBoolean("use_full_screen", false)) {
+       		//getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
+            //            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+           	//getSupportActionBar().hide();
+        } */
     }
     
     @Override

@@ -319,7 +319,9 @@ public class ComicFragment extends Fragment implements GestureDetector.OnDoubleT
 			
 			if (bar.isShowing()) {
 				bar.hide();
+				m_activity.hideSystemUiIfNecessary();				
 			} else {
+				m_activity.showSystemUiIfNecessary();
 				bar.show();
 			}
 		}
