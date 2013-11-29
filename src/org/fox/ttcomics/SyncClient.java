@@ -28,8 +28,14 @@ public class SyncClient {
 			} else if (op.equals("get")) {			 
 				requestStr = String.format("op=get&owner=%1$s&hash=%2$s", m_owner, params[1]);
 			} else if (op.equals("clear")) {
-				requestStr = String.format("op=clear&owner=%1$s", m_owner);
+				if (params.length > 1) {
+					requestStr = String.format("op=clear&owner=%1$s&hash=%2$s", m_owner, params[1]);
+				} else {
+					requestStr = String.format("op=clear&owner=%1$s", m_owner);
+				}
 			}
+			
+			Log.d(TAG, requestStr);
 			
 			if (requestStr == null) return false;
 			
@@ -133,6 +139,16 @@ public class SyncClient {
 			HttpTask task = new HttpTask();
 			
 			task.execute("clear");
+		}
+	}
+
+	public void clearData(String hash) {
+		if (m_owner != null) {
+			Log.d(TAG, "Clearing sync data: " + hash);
+			
+			HttpTask task = new HttpTask();
+			
+			task.execute("clear", hash);
 		}
 	}
 

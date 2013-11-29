@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -276,9 +278,8 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		switch (item.getItemId()) {
 		case R.id.menu_reset_progress:
 			if (fileName != null) {
-				m_activity.setLastPosition(fileName, 0);
-				m_activity.setLastMaxPosition(fileName, 0);
-				m_adapter.notifyDataSetChanged();
+				m_activity.resetProgress(fileName);
+				m_adapter.notifyDataSetChanged();	
 			}
 			return true;
 		case R.id.menu_mark_as_read:

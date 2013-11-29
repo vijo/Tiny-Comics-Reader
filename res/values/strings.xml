@@ -60,4 +60,6 @@
     <string name="prefs_comics_directory_summary">Base directory for comic archives.</string>
     <string name="prefs_fit_to_width">Fit to width</string>
     <string name="menu_donate">Donate</string>
+    <string name="sync_running_in_test_mode">Sync running in test mode.</string>
+    <string name="reset_remove_synced_progress">Would you like to remove synced progress too?</string>
 </resources>

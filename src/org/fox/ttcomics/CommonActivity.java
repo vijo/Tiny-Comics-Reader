@@ -8,7 +8,9 @@ import java.util.Date;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -88,8 +90,10 @@ public class CommonActivity extends SherlockFragmentActivity {
 	    	if (googleAccount != null) {
 	    		m_syncClient.setOwner(googleAccount);    			
 	    	} else {
-	    		if (Build.FINGERPRINT.startsWith("generic")) {		    		
+	    		if (Build.HARDWARE.contains("goldfish")) {		    		
 		    		m_syncClient.setOwner("TEST-ACCOUNT");	    			
+		    		
+		    		//toast(R.string.sync_running_in_test_mode);
 	    		} else {
 	    			m_syncClient.setOwner(null);
 	    			toast(R.string.error_sync_no_account);
@@ -188,6 +192,32 @@ public class CommonActivity extends SherlockFragmentActivity {
 		}
 	}
 
+	public void resetProgress(final String fileName) {
+		
+		if (m_prefs.getBoolean("use_position_sync", false) && m_syncClient.hasOwner()) {
+       		setLastPosition(fileName, 0);
+    		setLastMaxPosition(fileName, 0);
+		
+			AlertDialog.Builder builder = new AlertDialog.Builder(CommonActivity.this);
+			builder.setMessage(R.string.reset_remove_synced_progress)
+			       .setCancelable(true)
+			       .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   m_syncClient.clearData(sha1(new File(fileName).getName()));
+			           }
+			       })
+			       .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			                dialog.cancel();			                
+			           }
+			       });
+			AlertDialog alert = builder.create();
+			alert.show();
+		
+		}
+
+	}
+	
 	public void setLastPosition(String fileName, int position) {
 		int lastPosition = getLastPosition(fileName);
 		

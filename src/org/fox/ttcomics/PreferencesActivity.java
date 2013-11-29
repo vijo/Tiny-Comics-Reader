@@ -62,7 +62,7 @@ public class PreferencesActivity extends PreferenceActivity {
 				        	 if (googleAccount != null) {
 				        		 m_syncClient.setOwner(googleAccount);    			
 				        	 } else {
-				        		 if (Build.FINGERPRINT.startsWith("generic")) {		    		
+				        		 if (Build.HARDWARE.equals("goldfish")) {		    		
 				        			 m_syncClient.setOwner("TEST-ACCOUNT");	    			
 				        		 } else {				        		
 				        			 m_syncClient.setOwner(null);

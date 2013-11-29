@@ -211,7 +211,7 @@ public class ViewComicActivity extends CommonActivity {
 						if (position > localPosition) {
 							AlertDialog.Builder builder = new AlertDialog.Builder(ViewComicActivity.this);
 							builder.setMessage(getString(R.string.sync_server_has_further_page, localPosition+1, position+1))
-							       .setCancelable(false)
+							       .setCancelable(true)
 							       .setPositiveButton(R.string.dialog_open_page, new DialogInterface.OnClickListener() {
 							           public void onClick(DialogInterface dialog, int id) {
 							        	   pager.setCurrentItem(position);
