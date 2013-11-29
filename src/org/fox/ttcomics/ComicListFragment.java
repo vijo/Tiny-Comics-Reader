@@ -133,6 +133,22 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				}
 			}
 			
+			ImageView overflow = (ImageView) v.findViewById(R.id.comic_overflow);
+			
+			if (overflow != null) {
+				if (size == SIZE_DIR) {
+					overflow.setVisibility(View.GONE);					
+				} else {
+					overflow.setOnClickListener(new View.OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							getActivity().openContextMenu(v);
+						}
+					});
+				}
+			}
+			
 			File thumbnailFile = new File(m_activity.getCacheFileName(firstChild != null ? firstChild :  filePath + "/" + fileBaseName));
 			
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);

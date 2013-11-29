@@ -25,6 +25,16 @@
             android:padding="4dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_launcher" />
+
+        <ImageView
+            android:id="@+id/comic_overflow"
+            android:layout_gravity="bottom|right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:paddingBottom="4dp"
+            android:src="@drawable/ic_action_overflow" />
+
     </FrameLayout>
 
     <LinearLayout
