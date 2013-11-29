@@ -62,4 +62,5 @@
     <string name="menu_donate">Donate</string>
     <string name="sync_running_in_test_mode">Sync running in test mode.</string>
     <string name="reset_remove_synced_progress">Would you like to remove synced progress too?</string>
+    <string name="error_cant_open_file">Can\'t open file: %1$s</string>
 </resources>

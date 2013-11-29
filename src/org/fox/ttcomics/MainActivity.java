@@ -215,8 +215,6 @@ public class MainActivity extends CommonActivity {
 
 			startActivityForResult(intent, 0); 
 			
-			
-			
 		} else if (file.canRead()) {
 			Intent intent = new Intent(MainActivity.this,
 					ViewComicActivity.class);
@@ -225,6 +223,14 @@ public class MainActivity extends CommonActivity {
 			m_fileName = fileName;
 			
 			startActivityForResult(intent, REQUEST_VIEWCOMIC); 
+		} else {
+			toast(getString(R.string.error_cant_open_file, fileName));
+
+			ComicListFragment frag = (ComicListFragment) getSupportFragmentManager().findFragmentByTag(FRAG_COMICS_LIST);
+			
+			if (frag != null && frag.isAdded()) {
+				frag.rescan(true);
+			}
 		}
 	}
 
