@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -278,7 +276,13 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 		
 		getActivity().getMenuInflater().inflate(R.menu.comic_archive_context, menu);
 
-		// menu.setTitle(..); etc
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
+		
+		Cursor c = (Cursor) m_adapter.getItem(info.position);
+
+		if (c != null) {
+			menu.setHeaderTitle(c.getString(c.getColumnIndex("filename")));
+		}
 		
 		super.onCreateContextMenu(menu, v, menuInfo);		
 	}
