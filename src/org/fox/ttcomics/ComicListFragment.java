@@ -214,7 +214,7 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 				    options.inJustDecodeBounds = true;
 				    BitmapFactory.decodeFile(thumbnailFile.getAbsolutePath(), options);
 		
-				    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 128, 128);
+				    options.inSampleSize = CommonActivity.calculateInSampleSize(options, 256, 256);
 				    options.inJustDecodeBounds = false;
 				    
 				    Bitmap bmp = BitmapFactory.decodeFile(thumbnailFile.getAbsolutePath(), options);
