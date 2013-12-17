@@ -14,14 +14,13 @@
         android:layout_height="160dp"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0"
-        android:background="@android:drawable/toast_frame"
+        android:background="@drawable/comic_tile"
         android:padding="6dp" >
 
         <ImageView
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"
         	android:layout_height="match_parent"        	            
-            android:background="@drawable/border"
             android:padding="4dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_launcher" />

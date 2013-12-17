@@ -8,11 +8,11 @@
     android:padding="4dp" >
 
     <FrameLayout
-        android:id="@+id/listimageholder"
+        android:id="@+id/imageholder"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_weight="0"
-        android:background="@drawable/border"
+        android:background="@drawable/comic_tile"
         android:padding="2dp" >
 
         <ImageView
@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/white"
+            android:padding="2dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_launcher" />
     </FrameLayout>

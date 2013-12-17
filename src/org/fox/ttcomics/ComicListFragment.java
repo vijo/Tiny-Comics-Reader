@@ -152,25 +152,17 @@ public class ComicListFragment extends Fragment implements OnItemClickListener {
 			ImageView thumbnail = (ImageView) v.findViewById(R.id.thumbnail);
 			
 			if (thumbnail != null) {
-				View imageholder = v.findViewById(R.id.listimageholder);
+				View imageholder = v.findViewById(R.id.imageholder);
 				
 				int padding = dpToPx(2);
-				
-				if (size == SIZE_DIR) {					
-					if (isList && imageholder != null) {
-						imageholder.setBackgroundResource(R.drawable.border_folder);
-						imageholder.setPadding(padding, padding, padding, padding);
-					} else {
-						thumbnail.setBackgroundResource(R.drawable.border_folder);
-					}
 
-				} else {
-					
-					if (isList && imageholder != null) {
-						imageholder.setBackgroundResource(R.drawable.border);
+				if (imageholder != null) {
+					if (size == SIZE_DIR) {					
+						imageholder.setBackgroundResource(R.drawable.comic_tile_folder);
 						imageholder.setPadding(padding, padding, padding, padding);
 					} else {
-						thumbnail.setBackgroundResource(R.drawable.border);
+						imageholder.setBackgroundResource(R.drawable.comic_tile);
+						imageholder.setPadding(padding, padding, padding, padding);
 					}
 				}
 				
